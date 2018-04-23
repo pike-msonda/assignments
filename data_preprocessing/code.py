@@ -4,7 +4,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import entropy
-from sklearn.feature_selection import mutual_info_classif
 
 def equal_width(data, info,interval):
     for column in info:
@@ -34,7 +33,6 @@ def condition_P(A,B):
 def cond_P(A,B):
     cond_events = A.groupby(B, sort=False)
     values = cond_events.value_counts(normalize=False).unstack(level=1).fillna(0)
-    print (values)
     prob = []
     for col in values:
         total = sum(values[col])
@@ -45,11 +43,10 @@ def cond_P(A,B):
 
 def entropy_test(A):
     return  -sum(A * np.log2(A))
-def info_gain(main_entropy, entropy, total, counts):
-    return sum(main_entropy - entropy - (counts/total))
+def info_gain(main_entropy, entropy):
+    return main_entropy - entropy
 def entropys(A):
     total_ent = []
-    print (A)
     for a in A:
         if 0 in a:
             ix = a.index(0)
@@ -64,14 +61,18 @@ def information_gain(data,types):
     n_mcases = float(cases.max())
     total_prob = [n_mcases/total, n_rcases/total]
     total_ent = entropy(total_prob, base= 2)
+    print (total_ent)
     for col in data:
         counts =  data[col].value_counts().values
+        counts = [float(x) for x in counts]
+        probs = [x / total for x in counts]
         col_entropy = entropys(cond_P(data[col],types))
+        print (probs)
         print (col_entropy)
-        print (info_gain(total_ent, col_entropy, total, counts))
-        # for ent, prob in zip(col_entropy, counts):
-        #     gain = total_ent - col_entropy * (prob/total)
-        #     print (gain)
+        norm = 0
+        for ent, p in zip(col_entropy, probs):
+            norm += ent * p
+        print (info_gain(total_ent, norm))
       
 if(__name__ == "__main__"):
     """
@@ -121,4 +122,5 @@ if(__name__ == "__main__"):
     result = equal_width(df,info, 3)
     types = sonar_data['Type']
     ig = information_gain(df, types)
+    print (ig)
     plt.show()       
