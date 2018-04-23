@@ -10,15 +10,9 @@ def equal_width(data, info,interval):
         data[column] = pd.cut(data[column], interval,labels=create_label(interval))
     return data
 
-def make_bins(min, interval, width):
-    bins = []
-    count = 1
-    while (count < interval):
-            inter =  min + width
-            bins.append(pd.Interval(min, inter))
-            min =  inter
-            count = count  + 1
-    return pd.IntervalIndex.from_intervals(bins)
+def remove_classes(data):
+    return data.drop(['Type'], axis = 1)
+
 def create_label(bins):
     labels = []
     for x in range(0, bins):
@@ -27,9 +21,7 @@ def create_label(bins):
 def probability(X):
    
     return X.value_counts(normalize=True, sort=False)
-def condition_P(A,B):
-    cond_events = A.groupby(B, sort=False)
-    return probability(cond_events)
+
 def cond_P(A,B):
     cond_events = A.groupby(B, sort=False)
     values = cond_events.value_counts(normalize=False).unstack(level=1).fillna(0)
@@ -41,10 +33,6 @@ def cond_P(A,B):
         prob.append([np.divide(r,total), np.divide(m,total)])
     return prob
 
-def entropy_test(A):
-    return  -sum(A * np.log2(A))
-def info_gain(main_entropy, entropy):
-    return main_entropy - entropy
 def entropys(A):
     total_ent = []
     for a in A:
@@ -54,25 +42,25 @@ def entropys(A):
         total_ent.append(entropy(a, base=2))
     return total_ent
 def information_gain(data,types):
-    df['Type'] = types
-    total= data.shape[0]
-    cases = df.groupby('Type').count().values
+    gain = []
+    data['Type'] = types
+    size= data.index.size
+    cases = data.groupby('Type').count().values
     n_rcases = float(cases.min())
     n_mcases = float(cases.max())
-    total_prob = [n_mcases/total, n_rcases/total]
+    total_prob = [n_mcases/size, n_rcases/size]
     total_ent = entropy(total_prob, base= 2)
-    print (total_ent)
+    data = remove_classes(data)
     for col in data:
         counts =  data[col].value_counts().values
         counts = [float(x) for x in counts]
-        probs = [x / total for x in counts]
-        col_entropy = entropys(cond_P(data[col],types))
-        print (probs)
-        print (col_entropy)
-        norm = 0
-        for ent, p in zip(col_entropy, probs):
-            norm += ent * p
-        print (info_gain(total_ent, norm))
+        probs = [x / size for x in counts]
+        attribute_entropy = entropys(cond_P(data[col],types))
+        info_gain = total_ent - sum([a * b for a,b in zip(attribute_entropy, probs)])
+        gain.append({col: info_gain})
+        
+    return gain
+
       
 if(__name__ == "__main__"):
     """
@@ -80,25 +68,18 @@ if(__name__ == "__main__"):
     """
     # Read from sonar.dat file
     sonar_data =  pd.read_table('sonar.dat',sep=',',usecols=[0,1,2,3,60])
-    # 5 Row Summary:
-    # print (sonar_data.head())
-    # # Mean
-
-    # print (sonar_data.mean())
-    # # Mode
-    # print (sonar_data.mode())
-    # #  Standard Deviation
-    # print (sonar_data.std())
-
-    # # Variance
-    # print (sonar_data.var())
-
-
-
+    df = remove_classes(sonar_data) # Temporarily remove the type column
+    types = sonar_data['Type']
+    n = 3
+    #5 Row Summary:
+    #print (sonar_data.head())
+    
+    # Mean, Mode, Standard Deviation, Variance
+    #print (df.agg(['mean','std','var','min', 'max', 'count',np.percentile(25), ]))
     # print (sonar_data.quantile([0.25,0.5,0.75]))
     # # Min, Max Normalisation
     # # Remove Type column. 
-    df = sonar_data.drop(['Type'], axis= 1)
+    
     # normalised_data = (df - df.min())/(df.max() -  df.min())
     # print "Data after Min Max Normalisation"
     # print (normalised_data.head())
@@ -109,7 +90,7 @@ if(__name__ == "__main__"):
 
     # # Equal Width
     info = sonar_data.describe()
-    print (type(info))
+    #print (type(info))
     # bins = equal_width(df,info,10)
     # for col in df:
     #     hist = sns.distplot(df['Band1'], bins=10)
@@ -119,8 +100,8 @@ if(__name__ == "__main__"):
     # ax = sns.swarmplot(data=normalised_data)
 
     #information gain
-    result = equal_width(df,info, 3)
-    types = sonar_data['Type']
-    ig = information_gain(df, types)
-    print (ig)
-    plt.show()       
+    print(df.head())
+    eqw= equal_width(df,info, n)
+    info_gain = information_gain(eqw, types)
+    print ("Information Gain using {} Equal -Width method".format(n))
+    print (info_gain)     
