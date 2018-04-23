@@ -8,6 +8,8 @@ from scipy.stats import entropy
 
 #TODO: Add exception handling
 #TODO: Streamline the code to be more efficient 
+def min_max_normalization(data):
+    return (data - data.min())/(data.max() -  data.min())
 
 def equal_width(data, info,bins):
     '''
@@ -126,8 +128,8 @@ if(__name__ == "__main__"):
     print (sonar_data.head())
     
     # Mean, Mode, Standard Deviation, Variance
-    print (df.agg(['mean','std','var','min', 'max', 'count','quantile']))
-     
+    print (df.agg(['mean','std','var','min', 'max', 'count','quantile',{'min_max_norm': min_max_normalization }]))
+
     
     # normalised_data = (df - df.min())/(df.max() -  df.min())
     # print "Data after Min Max Normalisation"
