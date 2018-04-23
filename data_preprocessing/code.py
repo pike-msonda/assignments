@@ -11,6 +11,9 @@ from scipy.stats import entropy
 def min_max_normalization(data):
     return (data - data.min())/(data.max() -  data.min())
 
+def z_normalization(data):
+    return (data - data.mean())/data.std()
+
 def equal_width(data, info,bins):
     '''
         Basic Binning Method. Splits the attribute into n bins based on intervals. 
@@ -128,30 +131,31 @@ if(__name__ == "__main__"):
     print (sonar_data.head())
     
     # Mean, Mode, Standard Deviation, Variance
-    print (df.agg(['mean','std','var','min', 'max', 'count','quantile',{'min_max_norm': min_max_normalization }]))
+    print (df.agg(['mean','std','var','min', 'max', 'count','quantile']))
 
     
-    # normalised_data = (df - df.min())/(df.max() -  df.min())
-    # print "Data after Min Max Normalisation"
-    # print (normalised_data.head())
-    # # Z-score Normalisation
-    # z_normalised_data = (df - df.mean())/df.std()
-    # print "Data after Z-score Normalisation"
-    # print (z_normalised_data.head())
+    normalised_data = min_max_normalization(df)
+    print "Data after Min Max Normalisation"
+    print (normalised_data.head())
+    # Z-score Normalisation
+    z_normalised_data = z_normalization(df)
+    print "Data after Z-score Normalisation"
+    print (z_normalised_data.head())
 
-    # # Equal Width
+    # # Frequency Histogram 
+    #TODO: add names to graphs and assign colors randomly.
     info = sonar_data.describe()
-    #print (type(info))
-    # bins = equal_width(df,info,10)
-    # for col in df:
-    #     hist = sns.distplot(df['Band1'], bins=10)
-    #     plt.figure()
-    # Plot Boxplot for all attributes
-    # ax = sns.boxplot(data=normalised_data)
-    # ax = sns.swarmplot(data=normalised_data)
+    for col in df:
+        hist = sns.distplot(df[col], bins=10)
+        plt.figure()
+
+    #Plot Boxplot for all attributes
+    ax = sns.boxplot(data=normalised_data)
+    ax = sns.swarmplot(data=normalised_data)
 
     #information gain
     eqw= equal_width(df,info, n)
     info_gain = information_gain(eqw, types)
     print ("Information Gain using {} Equal -Width method".format(n))
     print (info_gain)     
+    plt.show()
