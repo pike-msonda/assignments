@@ -79,15 +79,11 @@ def get_entropy(A):
     '''
         Calculate the entropy of each attribute value
         
-        A: A list of probabilities. 
-
+        A: A list of probabilities. <list>
     '''
     try:
         entropy_list = []  # list to store all the entropy 
         for a in A:
-            if 0 in a: #Check if the probability has 0, which can't be computed by log2
-                ix = a.index(0)
-                a[ix] = 1
             entropy_list.append(entropy(a, base=2))
 
     except ZeroDivisionError:
@@ -101,7 +97,7 @@ def information_gain(data,types):
 
         data : given data set. Pandas.DataFrame
 
-        types: data classes.
+        types: data classes. <list>
 
         Mutual Information of Information Gain: Entropy(S) - Entropy(P|A)
 
@@ -139,20 +135,22 @@ if(__name__ == "__main__"):
     sonar_data =  pd.read_table('sonar.dat',sep=',',usecols=[0,1,2,3,60])
     df = remove_classes(sonar_data) # Temporarily remove the type column
     types = sonar_data['Type']
-    n = 3
+    n = 3       #equal width binning  
     #5 Row Summary:
+    print ("First 5 rows Summary:")
     print (sonar_data.head())
     
     # Mean, Mode, Standard Deviation, Variance
+    print ("Mean, Mode, Standard Deviation, InterQuartile, Min, Max, Count:")
     print (df.agg(['mean','std','var','min', 'max', 'count','quantile']))
 
     
     normalised_data = min_max_normalization(df)
-    print "Data after Min Max Normalisation"
+    print ("Data after Min Max Normalisation:")
     print (normalised_data.head())
     # Z-score Normalisation
     z_normalised_data = z_normalization(df)
-    print "Data after Z-score Normalisation"
+    print ("Data after Z-score Normalisation:")
     print (z_normalised_data.head())
 
     # # Frequency Histogram 
