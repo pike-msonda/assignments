@@ -5,13 +5,23 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import entropy
 
-
-#TODO: Add exception handling
 #TODO: Streamline the code to be more efficient 
+#TODO: Add mode function to aggregrates
+
 def min_max_normalization(data):
+    '''
+        Calculate the min-max Normalization for a dataset.
+
+        data: pandas.DataFrame
+    '''
     return (data - data.min())/(data.max() -  data.min())
 
 def z_normalization(data):
+    '''
+        Calculate the z-Normalization for a dataset.
+
+        data: pandas.DataFrame
+    '''
     return (data - data.mean())/data.std()
 
 def equal_width(data, info,bins):
@@ -56,13 +66,12 @@ def cond_P(A,B):
         B: pandas.DataFrame.column
     '''
 
-    cond_events = A.groupby(B, sort=False)
-    values = cond_events.value_counts(normalize=False).unstack(level=1).fillna(0)
+    cond_events = A.groupby(B, sort=False).value_counts(normalize=False).unstack(level=1).fillna(0)
     prob = []
-    for col in values:
-        total = sum(values[col])
-        r = float(values[col][0])
-        m = float(values[col][1])
+    for col in cond_events:
+        total = sum(cond_events[col])   # get total items for each bin 
+        r = float(cond_events[col][0])  # total class 'R' items
+        m = float(cond_events[col][1])  # total class 'M' items 
         prob.append([np.divide(r,total), np.divide(m,total)])
     return prob
 
@@ -73,13 +82,17 @@ def get_entropy(A):
         A: A list of probabilities. 
 
     '''
+    try:
+        entropy_list = []  # list to store all the entropy 
+        for a in A:
+            if 0 in a: #Check if the probability has 0, which can't be computed by log2
+                ix = a.index(0)
+                a[ix] = 1
+            entropy_list.append(entropy(a, base=2))
 
-    entropy_list = []  # list to store all the entropy 
-    for a in A:
-        if 0 in a: #Check if the probability has 0, which can't be computed by log2
-            ix = a.index(0)
-            a[ix] = 1
-        entropy_list.append(entropy(a, base=2))
+    except ZeroDivisionError:
+        print ("An error occurred, this {} list has zero which can't be computed by log2".format(a))
+
     return entropy_list
 
 def information_gain(data,types):
@@ -146,7 +159,8 @@ if(__name__ == "__main__"):
     #TODO: add names to graphs and assign colors randomly.
     info = sonar_data.describe()
     for col in df:
-        hist = sns.distplot(df[col], bins=10)
+        clr_palette = sns.color_palette()
+        hist = sns.distplot(df[col], bins=10,kde=False, color="red")
         plt.figure()
 
     #Plot Boxplot for all attributes
