@@ -7,7 +7,14 @@ from scipy.stats import entropy
 
 #TODO: Streamline the code to be more efficient 
 #TODO: Add mode function to aggregrates
-
+def mode(data):
+    mode_index_size =  data.index.size
+    for m in data:
+        if data[m].isnull().any():
+            data[m] = data[m].fillna(0).sum()
+        else:
+            data[m] = data[m].sum()/ mode_index_size
+    return data.head(1)
 def min_max_normalization(data):
     '''
         Calculate the min-max Normalization for a dataset.
@@ -34,7 +41,7 @@ def equal_width(data, info,bins):
     '''
 
     for column in info:
-        data[column] = pd.cut(data[column], bins,labels=create_label(bins))
+        data[column] = pd.cut(data[column], bins,labels=create_labels(bins))
     return data
 
 def remove_classes(data):
@@ -46,7 +53,7 @@ def remove_classes(data):
 
     return data.drop(['Type'], axis = 1)
 
-def create_label(bins):
+def create_labels(bins):
     '''
         Simple Function to create labels correspnding to the numbers of bins requested
         bins: Integer
@@ -111,7 +118,8 @@ def information_gain(data,types):
     n_mcases = float(cases.max())
     total_prob = [n_mcases/size, n_rcases/size]
     total_ent = entropy(total_prob, base= 2)
-    data = remove_classes(data)
+    data = remove_classes(data) # Remove the column class
+
     for col in data:
         counts =  data[col].value_counts().values
         counts = [float(x) for x in counts]
@@ -121,14 +129,14 @@ def information_gain(data,types):
         gain.append({col: info_gain})
 
     return gain
-
-'''
-    Data Processing Assignment to perform pre-processing operations on a given data set {sonar.dat}
-    Data Description included in the file names.txt
-'''     
+   
 if(__name__ == "__main__"):
     '''
-    Main program
+        Data Processing Assignment to perform pre-processing operations on a given data set {sonar.dat}
+
+        Data Description included in the file names.txt
+
+        Main program
     '''
 
     # Read from sonar.dat file
@@ -141,10 +149,14 @@ if(__name__ == "__main__"):
     print (sonar_data.head())
     
     # Mean, Mode, Standard Deviation, Variance
-    print ("Mean, Mode, Standard Deviation, InterQuartile, Min, Max, Count:")
+    print ("Mean, Standard Deviation, InterQuartile, Min, Max, Count:")
     print (df.agg(['mean','std','var','min', 'max', 'count','quantile']))
 
-    
+    # Mode 
+    print ("Mode:")
+    mde = df.mode()
+    print(mode(mde))
+
     normalised_data = min_max_normalization(df)
     print ("Data after Min Max Normalisation:")
     print (normalised_data.head())
@@ -170,4 +182,4 @@ if(__name__ == "__main__"):
     info_gain = information_gain(eqw, types)
     print ("Information Gain using {} Equal -Width method".format(n))
     print (info_gain)     
-    plt.show()
+    #plt.show()
