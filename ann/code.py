@@ -19,6 +19,7 @@ def encode_text_index(df, name):
     df[name] = le.fit_transform(df[name])
     return le.classes_
 
+#  Transform data to fit the format acceptable by Keras model
 def to_xy(df, target):
     result = []
     for x in df.columns:
@@ -56,15 +57,15 @@ if(__name__ == "__main__"):
     import_data = pd.read_csv('damar.csv', delimiter=';', decimal=',')
     #print (import_data.head())
     classes = encode_text_index(import_data, "sinif")
+    print (classes)
     x_data, y_data = to_xy(import_data, "sinif")
     print (y_data.shape)
     # Split data set into train and test sets
     X_train_set, X_test_set, Y_train_test, Y_test_set =  train_test_split(x_data, y_data, test_size=0.30)
     print("X {} and Y {} training set count".format(X_train_set.shape, Y_train_test.shape))
     print("X {} and Y {} testing set count ".format(X_test_set.shape, Y_test_set.shape))
-    # Plot a count graph 
 
-    #create Neural Network 
+    # #create Neural Network 
     model = Sequential()
     model.add(Dense(64, activation='relu', input_dim=x_data.shape[1]))
     model.add(Dropout(0.5))
@@ -73,8 +74,8 @@ if(__name__ == "__main__"):
     model.add(Dense(25, activation='softmax'))
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.6, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    model.fit(X_train_set, Y_train_test, verbose=0, epochs=1000, batch_size=128)
-    score = model.evaluate(X_test_set, Y_test_set, verbose = 1, batch_size=128)
+    model.fit(X_train_set, Y_train_test, verbose=0, epochs=1000, batch_size=32)
+    score = model.evaluate(X_test_set, Y_test_set, verbose = 1, batch_size=32)
     print(score)
     pred = model.predict(X_test_set)
     pred = np.argmax(pred, axis=1)
@@ -85,12 +86,7 @@ if(__name__ == "__main__"):
     print (cm)
     plt.figure()
     plot_confusion_matrix(cm, classes)
-
-    cm_normalized =  cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    print ("Confusio Matrix with Normalisation")
-    print(cm_normalized)
-    plt.figure()
-    plot_confusion_matrix(cm_normalized, classes, title="Confusion Matrix with Normalisation")
+    # Plot a count graph 
     #ax = sns.countplot(x='sinif', data=import_data, palette=sns.color_palette("Spectral",5))
     plt.show()
 
