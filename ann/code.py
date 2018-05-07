@@ -11,6 +11,7 @@ from sklearn import preprocessing
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.optimizers import SGD
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.utils import to_categorical
 
 
@@ -48,16 +49,12 @@ def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-if(__name__ == "__main__"):
-    '''
-        Main Program'
-    '''
+def main():
     np.random.seed(125)
     # Read CSV file
     import_data = pd.read_csv('damar.csv', delimiter=';', decimal=',')
     #print (import_data.head())
     classes = encode_text_index(import_data, "sinif")
-    print (classes)
     x_data, y_data = to_xy(import_data, "sinif")
     print (y_data.shape)
     # Split data set into train and test sets
@@ -71,11 +68,14 @@ if(__name__ == "__main__"):
     model.add(Dropout(0.5))
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(25, activation='softmax'))
+    model.add(Dense(len(classes), activation='softmax'))
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.6, nesterov=True)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    model.fit(X_train_set, Y_train_test, verbose=0, epochs=1000, batch_size=32)
-    score = model.evaluate(X_test_set, Y_test_set, verbose = 1, batch_size=32)
+    model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
+    monitor  = EarlyStopping(monitor="val_loss", min_delta=1e-3, patience=5, verbose=0, mode="auto")
+    checkpointer=  ModelCheckpoint(filepath="best_weights.hdf5", verbose=0, save_best_only=True)
+    model.fit(X_train_set, Y_train_test, validation_data=(X_test_set, Y_test_set), callbacks=[monitor, checkpointer], verbose=0, epochs=100)
+    model.load_weights("best_weights.hdf5")
+    score = model.evaluate(X_test_set, Y_test_set, verbose = 0)
     print(score)
     pred = model.predict(X_test_set)
     pred = np.argmax(pred, axis=1)
@@ -86,7 +86,16 @@ if(__name__ == "__main__"):
     print (cm)
     plt.figure()
     plot_confusion_matrix(cm, classes)
+    cm_normalized =  cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    plt.figure()
+    plot_confusion_matrix(cm_normalized,classes, title="Confusion Matrix with Normalisation")
     # Plot a count graph 
     #ax = sns.countplot(x='sinif', data=import_data, palette=sns.color_palette("Spectral",5))
     plt.show()
+
+if(__name__ == "__main__"):
+    '''
+        Main Program'
+    '''
+    main()
 
