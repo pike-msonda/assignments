@@ -56,7 +56,8 @@ def main():
     #print (import_data.head())
     classes = encode_text_index(import_data, "sinif")
     x_data, y_data = to_xy(import_data, "sinif")
-    print (y_data.shape)
+    print (x_data)
+    print (y_data)
     # Split data set into train and test sets
     X_train_set, X_test_set, Y_train_test, Y_test_set =  train_test_split(x_data, y_data, test_size=0.30)
     print("X {} and Y {} training set count".format(X_train_set.shape, Y_train_test.shape))
@@ -73,7 +74,7 @@ def main():
     model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
     monitor  = EarlyStopping(monitor="val_loss", min_delta=1e-3, patience=5, verbose=0, mode="auto")
     checkpointer=  ModelCheckpoint(filepath="best_weights.hdf5", verbose=0, save_best_only=True)
-    model.fit(X_train_set, Y_train_test, validation_data=(X_test_set, Y_test_set), callbacks=[monitor, checkpointer], verbose=0, epochs=100)
+    model.fit(X_train_set, Y_train_test, validation_data=(X_test_set, Y_test_set), callbacks=[monitor, checkpointer], verbose=1, epochs=100)
     model.load_weights("best_weights.hdf5")
     score = model.evaluate(X_test_set, Y_test_set, verbose = 0)
     print(score)
@@ -91,7 +92,7 @@ def main():
     plot_confusion_matrix(cm_normalized,classes, title="Confusion Matrix with Normalisation")
     # Plot a count graph 
     #ax = sns.countplot(x='sinif', data=import_data, palette=sns.color_palette("Spectral",5))
-    plt.show()
+    #plt.show()
 
 if(__name__ == "__main__"):
     '''

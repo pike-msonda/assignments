@@ -182,4 +182,4 @@ if(__name__ == "__main__"):
     info_gain = information_gain(eqw, types)
     print ("Information Gain using {} Equal -Width method".format(n))
     print (info_gain)     
-    plt.show()
+    #plt.show()
