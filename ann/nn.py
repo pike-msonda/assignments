@@ -61,6 +61,8 @@ def main():
     print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
     print ("Total accuracy {}".format(accuracy))
     print ("The program exectuted successfuly in: %s seconds" % (time.time() - start))
+
+    
 if(__name__ == "__main__"):
     '''
         Main Program'

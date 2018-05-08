@@ -1,4 +1,5 @@
 .python-version
-.hdf5
+*.hdf5
 .vscode
-.sav
+*.sav
+*.pyc
