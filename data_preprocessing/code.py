@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import entropy
 
+plt.style.use(['bmh'])
 #TODO: Streamline the code to be more efficient 
 #TODO: Add mode function to aggregrates
 def mode(data):
@@ -129,21 +130,13 @@ def information_gain(data,types):
         gain.append({col: info_gain})
 
     return gain
-   
-if(__name__ == "__main__"):
-    '''
-        Data Processing Assignment to perform pre-processing operations on a given data set {sonar.dat}
 
-        Data Description included in the file names.txt
-
-        Main program
-    '''
-
-    # Read from sonar.dat file
+def main():
+     # Read from sonar.dat file
     sonar_data =  pd.read_table('sonar.dat',sep=',',usecols=[0,1,2,3,60]) #slect the frist 4 columns and the class column
     df = remove_classes(sonar_data) # Temporarily remove the type column
     types = sonar_data['Type']
-    n = 3       #equal width binning  
+    n = bins      #equal width binning  
     #5 Row Summary:
     print ("First 5 rows Summary:")
     print (sonar_data.head())
@@ -168,12 +161,14 @@ if(__name__ == "__main__"):
     # # Frequency Histogram 
     #TODO: add names to graphs and assign colors randomly.
     info = sonar_data.describe()
+    index = 221
+    colors = "bgrcmykw"
     for col in df:
-        clr_palette = sns.color_palette()
-        hist = sns.distplot(df[col], bins=10,kde=False, color="red")
-        plt.figure()
-
+        plt.subplot(index)
+        ax = sns.distplot(df[col],kde=True, color=colors[np.random.randint(0,7)])
+        index += 1
     #Plot Boxplot for all attributes
+    plt.figure()
     ax = sns.boxplot(data=normalised_data)
     ax = sns.swarmplot(data=normalised_data)
 
@@ -182,4 +177,15 @@ if(__name__ == "__main__"):
     info_gain = information_gain(eqw, types)
     print ("Information Gain using {} Equal -Width method".format(n))
     print (info_gain)     
-    #plt.show()
+
+   
+if(__name__ == "__main__"):
+    '''
+        Data Processing Assignment to perform pre-processing operations on a given data set {sonar.dat}
+
+        Data Description included in the file names.txt
+
+        Main program
+    '''
+    main()
+    plt.show()

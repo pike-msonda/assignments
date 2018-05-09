@@ -8,17 +8,27 @@ from sklearn import preprocessing
 from lib.utils import *
 from lib.NeuralNetwork import NeuralNetwork
 
-
-
+# CONSTANT VARIABLES
 RANDOM_SEED = 45
 FILENAME = 'damar.csv'
 
 def encode_text_index(df, name):
+    """
+        Label Encoding using sklearn.preporcessing. Transforms labels into integers i.e: [a, b, c] => [1, 2, 3]
+
+        df: pandas.DataFrame
+        name: string
+
+    """
     le = preprocessing.LabelEncoder()
     df[name] = le.fit_transform(df[name])
     return le.classes_
 
 def prepare_data():
+    """
+        Reads data from file, and splits it into training and testing data
+
+    """
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')
     encode_text_index(data,'sinif')
     classes = data['sinif']
@@ -30,10 +40,22 @@ def prepare_data():
     Y_train = Y.values
     y_test = y.values
     return X_train, x_test, Y_train, y_test, num_labels
+
+
 def calculate_accuracy(classifier,X, Y):
+    """
+        Helper method to find the accuracy of a prediction
+        
+        classifier: NeuralNetowrk instance
+        X: imput data
+        Y: target 
+    """
     return classifier.accuracy(X, Y)
 
 def main():
+    """
+        Main Function to iniate the Neural Network training
+    """
     start = time.time()
     model_name = "neural.sav"
     X_train, x_test, Y_train, y_test, dimension = prepare_data()
@@ -56,8 +78,8 @@ def main():
         ann.fit(X_train, Y_train)
         pickle.dump(ann, open(model_name, 'wb'))
 
-    accuracy = calculate_accuracy(ann, x_test, y_test)
-    train_error, test_error = get_train_test_error(ann, x_test, y_test, num_iterations=1, split= 0.25)
+    accuracy = calculate_accuracy(ann, X_train, Y_train)
+    train_error, test_error = get_train_test_error(ann, X_train, Y_train, num_iterations=1, split= 0.25)
     print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
     print ("Total accuracy {}".format(accuracy))
     print ("The program exectuted successfuly in: %s seconds" % (time.time() - start))
