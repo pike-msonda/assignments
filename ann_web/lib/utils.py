@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -8,7 +8,8 @@ from sklearn.model_selection import train_test_split
 
 # CONSTANT VARIABLES
 RANDOM_SEED = 45
-FILENAME = 'damar.csv'
+FILENAME = 'data/damar.csv'
+MODELFILENAME = "AI_model/neuron.sav"
 
 def onehot_encode(y):
     """one hot encode labels into a matrix
@@ -49,17 +50,17 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
     test_error /=num_iterations
     return train_error, test_error
     
-def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(names))
-    plt.xticks(tick_marks, names, rotation=45)
-    plt.yticks(tick_marks, names)
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.show()
+# def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
+#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
+#     plt.title(title)
+#     plt.colorbar()
+#     tick_marks = np.arange(len(names))
+#     plt.xticks(tick_marks, names, rotation=45)
+#     plt.yticks(tick_marks, names)
+#     plt.tight_layout()
+#     plt.ylabel('True label')
+#     plt.xlabel('Predicted label')
+#     plt.show()
 
 def calculate_accuracy(classifier,X, Y):
     """
