@@ -77,8 +77,9 @@ def main():
     model.fit(X_train_set, Y_train_test, validation_data=(X_test_set, Y_test_set), callbacks=[monitor, checkpointer], verbose=1, epochs=100)
     model.load_weights("best_weights.hdf5")
     score = model.evaluate(X_test_set, Y_test_set, verbose = 0)
-    print(score)
+
     pred = model.predict(X_test_set)
+    print(pred)
     pred = np.argmax(pred, axis=1)
     Y_test2 = np.argmax(Y_test_set, axis=1)
     cm =  confusion_matrix(Y_test2, pred)
@@ -92,7 +93,7 @@ def main():
     plot_confusion_matrix(cm_normalized,classes, title="Confusion Matrix with Normalisation")
     # Plot a count graph 
     #ax = sns.countplot(x='sinif', data=import_data, palette=sns.color_palette("Spectral",5))
-    #plt.show()
+    plt.show()
 
 if(__name__ == "__main__"):
     '''

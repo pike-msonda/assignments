@@ -93,17 +93,6 @@ class NeuralNetwork(object):
         """
         return np.tanh(z) if not deriv else 1 - np.square(np.tanh(z))
 
-    def relu(self, z, deriv = False):
-        if not deriv:
-            relud = z
-            relud[relud < 0] = 0
-            return relud
-        deriv = z
-        deriv[deriv <= 0] = 0
-        deriv[deriv > 0] = 1
-        return deriv
-
-
     def add_bias_unit(self, X, column=True):
         """Adds a bias unit to our inputs"""
         if column:
@@ -168,8 +157,8 @@ class NeuralNetwork(object):
         return cost/y_enc.shape[1]
 
     def backprop(self, a1, a2, a3, z2, y_enc, w1, w2):
-        """ Computes the gradient using backpropagation
-            Params:
+        """ 
+            Computes the gradient using backpropagation
             a1: array of n_samples by features+1 - activation of input layer (just input plus bias)
             a2: activation of hidden layer
             a3: activation of output layer
@@ -177,7 +166,6 @@ class NeuralNetwork(object):
             y_enc: onehot encoded class labels
             w1: weight matrix of input layer to hidden layer
             w2: weight matrix of hidden to output layer
-            returns: grad1, grad2: gradient of weight matrix w1, gradient of weight matrix w2
         """
         #backpropagate our error
         sigma3 = a3 - y_enc
@@ -196,7 +184,8 @@ class NeuralNetwork(object):
         """Calculate the training accuracy. Requires passing through the entire dataset."""
         y_train_pred = self.predict(X_train)
         diffs = y_train_pred - y_train
-        count = 0.
+        count = 0
+        mistakes = []
         for i in range(y_train.shape[0]):
             if diffs[i] != 0:
                 count+=1
@@ -233,7 +222,7 @@ class NeuralNetwork(object):
                                                                                                   self.activation,
                                                                                                   self.n_features))
         costs = []
-        grad_1_li, grad_2_li = [], [] # used to keep list of gradients which can be used to measure and differentiate between learning speed of input -> hidden and hidden -> output layer weights
+        grad_1_li, grad_2_li = [], [] 
 
         #pass through the dataset
         for i in range(self.epochs):
@@ -271,56 +260,30 @@ class NeuralNetwork(object):
                         w1_check_3 = w1_check - (eps * E)
                         for j in range(w1_check.shape[0]):
                             if j != i:
-                                assert w1_check_2[j] == w1_check[j], "Houston we have a problem"
-                                assert w1_check_3[j] == w1_check[j], "Houston we have a problem"
+                                assert w1_check_2[j] == w1_check[j], "A problem occurred"
+                                assert w1_check_3[j] == w1_check[j], "A problem occurred"
                         J1 = self.get_cost(y_enc=y_enc[:, idx], output=a3, w1=w1_check_2.reshape((self.w1.shape[0], self.w1.shape[1])), w2=self.w2)
                         J2 = self.get_cost(y_enc=y_enc[:, idx], output=a3, w1=w1_check_3.reshape((self.w1.shape[0], self.w1.shape[1])), w2=self.w2)
                         numerical_gradient = (J1 - J2) / (2 * eps)
                         if i % 100 == 0:
                             print("numerical gradient is {} and actual gradient is {}".format(numerical_gradient, g1_check[i]))
 
-                # update parameters, multiplying by learning rate + momentum constants
-                # w1_update, w2_update = self.momentum_optimizer(self.learning_rate, grad1, grad2)
                 w1_update, w2_update = self.learning_rate*grad1, self.learning_rate*grad2
-                # OPTIMIZERS TEST - remove this later
-                # w1_update, w2_update = vanilla_gd([self.learning_rate], grad1, grad2)
-                # self.w1 += -(w1_update)
-                # self.w2 += -(w2_update)
-                # continue
                 if self.nesterov:
-                    # v_prev = v # back this up
-                    # v = mu * v - learning_rate * dx # velocity update stays the same
-                    # x += -mu * v_prev + (1 + mu) * v # position update changes form
-                    # psuedocode from http://cs231n.github.io/neural-networks-3/#sgd
                     v1 = self.momentum_const * prev_grad_w1 - w1_update
                     v2 = self.momentum_const * prev_grad_w2 - w2_update
                     self.w1 += -self.momentum_const * prev_grad_w1 + (1 + self.momentum_const) * v1
                     self.w2 += -self.momentum_const * prev_grad_w2 + (1 + self.momentum_const) * v2
                 else:
-                    # gradient update: w += -alpha * gradient.
-                    # use momentum - add in previous gradient mutliplied by a momentum hyperparameter.
                     self.w1 += -(w1_update + (self.momentum_const*prev_grad_w1))
                     self.w2 += -(w2_update + (self.momentum_const*prev_grad_w2))
-                # save previous gradients for momentum
-                # grads_w1.append(w1_update)
-                # grads_w2.append(w2_update)
-                # prev_grad_w1 = np.mean(grads_w1)
-                # prev_grad_w2 = np.mean(grads_w2)
-                # alternate way that just remembers the previous gradient
                 prev_grad_w1, prev_grad_w2 = w1_update, w2_update
 
             if print_progress and (i+1) % 1 == 0:
                 print("Epoch: {}".format(i + 1))
                 print("Loss: {}".format(cost))
-                if self.check_gradients:
-                    print("Gradient Error: {}".format(w1_grad_error))
-                grad_1_mag, grad_2_mag = np.linalg.norm(grad_1_li), np.linalg.norm(grad_2_li)
                 acc = self.accuracy(X, y)
                 previous_accuracies.append(acc)
-                if self.early_stop is not None and len(previous_accuracies) > 3:
-                    if abs(previous_accuracies[-1] - previous_accuracies[-2]) < self.early_stop and abs(previous_accuracies[-1] - previous_accuracies[-3]) < self.early_stop:
-                        print("Early stopping, accuracy has stayed roughly constant over last 100 iterations.")
-                        break
 
                 print("Training Accuracy: {}".format(acc))
 

@@ -1,11 +1,8 @@
 """Utils to perform error checking, CV, and hyperparameter tuning."""
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
-import sklearn.datasets
-from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 def onehot_encode(y):
     """one hot encode labels into a matrix
@@ -45,4 +42,15 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
     train_error /=num_iterations
     test_error /=num_iterations
     return train_error, test_error
-
+    
+def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(names))
+    plt.xticks(tick_marks, names, rotation=45)
+    plt.yticks(tick_marks, names)
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.show()

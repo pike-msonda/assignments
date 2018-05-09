@@ -136,7 +136,7 @@ def main():
     sonar_data =  pd.read_table('sonar.dat',sep=',',usecols=[0,1,2,3,60]) #slect the frist 4 columns and the class column
     df = remove_classes(sonar_data) # Temporarily remove the type column
     types = sonar_data['Type']
-    n = bins      #equal width binning  
+    n = 3      #equal width binning  
     #5 Row Summary:
     print ("First 5 rows Summary:")
     print (sonar_data.head())

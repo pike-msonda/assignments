@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split  
 from sklearn import preprocessing  
+from sklearn.metrics import confusion_matrix
 from lib.utils import *
 from lib.NeuralNetwork import NeuralNetwork
 
@@ -30,7 +31,8 @@ def prepare_data():
 
     """
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')
-    encode_text_index(data,'sinif')
+    distinct_classes =encode_text_index(data,'sinif')
+    print(distinct_classes)
     classes = data['sinif']
     num_labels = len(np.unique(classes))
     inputs = data.drop('sinif', axis=1)
@@ -39,7 +41,7 @@ def prepare_data():
     x_test =  test.values
     Y_train = Y.values
     y_test = y.values
-    return X_train, x_test, Y_train, y_test, num_labels
+    return X_train, x_test, Y_train, y_test, num_labels, distinct_classes
 
 
 def calculate_accuracy(classifier,X, Y):
@@ -58,11 +60,12 @@ def main():
     """
     start = time.time()
     model_name = "neural.sav"
-    X_train, x_test, Y_train, y_test, dimension = prepare_data()
+    X_train, x_test, Y_train, y_test, dimension, classes = prepare_data()
     ann = NeuralNetwork(n_output=dimension, 
                         n_features=X_train.shape[1], 
                         n_hidden=100, 
-                        learning_rate=0.001, 
+                        learning_rate=0.001,
+                        epochs=300, 
                         momentum_const=0.5, 
                         decay_rate=0.00001, 
                         activation='sigmoid',
@@ -78,10 +81,16 @@ def main():
         ann.fit(X_train, Y_train)
         pickle.dump(ann, open(model_name, 'wb'))
 
-    accuracy = calculate_accuracy(ann, X_train, Y_train)
-    train_error, test_error = get_train_test_error(ann, X_train, Y_train, num_iterations=1, split= 0.25)
+    accuracy = calculate_accuracy(ann, x_test, y_test)
+    train_error, test_error = get_train_test_error(ann, x_test, y_test, num_iterations=1, split= 0.33)
     print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
     print ("Total accuracy {}".format(accuracy))
+
+    #Building a confusion Matrix
+    pred = ann.predict(x_test)
+    cm = confusion_matrix(y_test, pred)
+    np.set_printoptions(precision=2)
+    plot_confusion_matrix(cm, classes)
     print ("The program exectuted successfuly in: %s seconds" % (time.time() - start))
 
     
