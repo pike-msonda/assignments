@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 from scipy.stats import entropy
 
 plt.style.use(['bmh'])
+FILENAME = "sonar.dat"
+CLASS_NAME = "Type"
 #TODO: Streamline the code to be more efficient 
-#TODO: Add mode function to aggregrates
 def mode(data):
     mode_index_size =  data.index.size
     for m in data:
@@ -16,6 +17,15 @@ def mode(data):
         else:
             data[m] = data[m].sum()/ mode_index_size
     return data.head(1)
+
+def random_colors():
+    """
+        Generate random color index from given index set
+        color_index: An array of colors to be displayed.
+    """
+    color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: random.randint(0, 255), range(3)))
+    return color
+
 def min_max_normalization(data):
     '''
         Calculate the min-max Normalization for a dataset.
@@ -32,7 +42,7 @@ def z_normalization(data):
     '''
     return (data - data.mean())/data.std()
 
-def equal_width(data, info,bins):
+def equal_width(data,bins):
     '''
         Basic Binning Method. Splits the attribute into n bins based on intervals. 
 
@@ -40,19 +50,22 @@ def equal_width(data, info,bins):
         info : pandas.DataFrame
         bins : Integer
     '''
-
-    for column in info:
-        data[column] = pd.cut(data[column], bins,labels=create_labels(bins))
-    return data
+    output_frame = pd.DataFrame()
+    for column in data:
+        output_frame[column] = pd.cut(data[column], bins,labels=create_labels(bins), retbins=False)
+    return output_frame
 
 def remove_classes(data):
     '''
         Remove the class column fromt pandas.DataFrame
 
         data: pandas.DataFrame
+        
+        class_name: String
     '''
+    classes  = data[CLASS_NAME]
 
-    return data.drop(['Type'], axis = 1)
+    return data.drop([CLASS_NAME], axis = 1), classes
 
 def create_labels(bins):
     '''
@@ -112,14 +125,14 @@ def information_gain(data,types):
     '''
     #TODO: Cut down the number of unnecessary operations
     gain = []
-    data['Type'] = types
+    data[CLASS_NAME] = types
     size= data.index.size
-    cases = data.groupby('Type').count().values
+    cases = data.groupby(CLASS_NAME).count().values
     n_rcases = float(cases.min())
     n_mcases = float(cases.max())
     total_prob = [n_mcases/size, n_rcases/size]
     total_ent = entropy(total_prob, base= 2)
-    data = remove_classes(data) # Remove the column class
+    data = remove_classes(data)[0] # Remove the column class
 
     for col in data:
         counts =  data[col].value_counts().values
@@ -130,16 +143,19 @@ def information_gain(data,types):
         gain.append({col: info_gain})
 
     return gain
+def load_data(filename):
+    # Read from sonar.dat file
+    data = pd.read_table(filename,sep=',',usecols=[0,1,2,3,60]) #slect the frist 4 columns and the class column
+
+    return data
 
 def main():
-     # Read from sonar.dat file
-    sonar_data =  pd.read_table('sonar.dat',sep=',',usecols=[0,1,2,3,60]) #slect the frist 4 columns and the class column
-    df = remove_classes(sonar_data) # Temporarily remove the type column
-    types = sonar_data['Type']
-    n = 3      #equal width binning  
+
+    df, types = remove_classes(load_data(FILENAME)) # Temporarily remove the type column
+    equalWidthIndex = [3,4]     #equal width binning  
     #5 Row Summary:
     print ("First 5 rows Summary:")
-    print (sonar_data.head())
+    print (load_data(FILENAME).head())
     
     # Mean, Mode, Standard Deviation, Variance
     print ("Mean, Standard Deviation, InterQuartile, Min, Max, Count:")
@@ -160,23 +176,22 @@ def main():
 
     # # Frequency Histogram 
     #TODO: add names to graphs and assign colors randomly.
-    info = sonar_data.describe()
     index = 221
-    colors = "bgrcmykw"
     for col in df:
         plt.subplot(index)
-        ax = sns.distplot(df[col],kde=True, color=colors[np.random.randint(0,7)])
+        ax = sns.distplot(df[col],kde=True, color=random_colors())
         index += 1
     #Plot Boxplot for all attributes
     plt.figure()
-    ax = sns.boxplot(data=normalised_data)
-    ax = sns.swarmplot(data=normalised_data)
+    ax = sns.boxplot(data=df)
+    ax = sns.swarmplot(data=df)
 
     #information gain
-    eqw= equal_width(df,info, n)
-    info_gain = information_gain(eqw, types)
-    print ("Information Gain using {} Equal -Width method".format(n))
-    print (info_gain)     
+    for n in equalWidthIndex:
+        eqw= equal_width(df, n)
+        info_gain = information_gain(eqw, types)
+        print ("Information Gain using {} Equal -Width method".format(n))
+        print (info_gain)     
 
    
 if(__name__ == "__main__"):

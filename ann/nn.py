@@ -37,13 +37,15 @@ def main():
         pickle.dump(ann, open(model_name, 'wb'))
 
     accuracy = calculate_accuracy(ann, x_test, y_test)
-    train_error, test_error = get_train_test_error(ann, x_test, y_test, num_iterations=1, split= 0.33)
-    print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
+    #train_error, test_error = get_train_test_error(ann, X_train, Y_train, num_iterations=1, split= 0.33)
+    #print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
     print ("Total accuracy {}".format(accuracy))
 
     #Building a confusion Matrix
     pred = ann.predict(x_test)
-    cm = confusion_matrix(y_test, pred)
+    cm = confusion_matrix(y_test,pred)
+    print (pred)
+    print (y_test)
     np.set_printoptions(precision=2)
     plot_confusion_matrix(cm, classes)
     print ("The program exectuted successfuly in: %s seconds" % (time.time() - start))
@@ -51,6 +53,7 @@ def main():
     
 if(__name__ == "__main__"):
     '''
+       
         Main Program'
     '''
     main()

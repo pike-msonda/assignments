@@ -91,7 +91,6 @@ def prepare_data():
     """
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')
     distinct_classes =encode_text_index(data,'sinif')
-    print(distinct_classes)
     classes = data['sinif']
     num_labels = len(np.unique(classes))
     inputs = data.drop('sinif', axis=1)

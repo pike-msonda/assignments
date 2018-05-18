@@ -2,11 +2,31 @@ $def with()
 <html>
     <head>
         <title>Neural Network Configuration</title>
-        <script type="JavaScript">
-            <!--Insert JavaScript Here-->
-        </script>
+        <link rel="stylesheet" type="text/css" href="static/styles.css" />
+        <link rel="stylesheet" type="text/css" href="static/jquery-ui.css"/>
+        <script src="static/jquery-3.3.1.js"></script>
+        <script src="static/jquery-ui.js"></script>
     </head>
     <body>
-        <h3>This section will contain all the setting for the Neural Network</h3>
+            <h2 class="assignment">Assignment</h2>
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tab1">Neural Netowrk</a></li>
+                    <li><a href="#tab2">Details</a></li>
+                    <li><a href="#tab3">About</a></li>
+                </ul>
+                <div id="tab1">
+                    <div id="fileUpload">
+                        <form method="POST" enctype="multipart/form-data">
+                            File:  <input type="file" name="dataFile" id="dataFile"> 
+                            <input type="submit" id="data" value="Upload" />  
+                        </form>
+                    </div>
+                       
+                </div>
+                <div id="tab2"></div>
+                <div id="tab3"></div>
+            </div>
+    <script src="static/process.js"></script>
     </body>
 </html>

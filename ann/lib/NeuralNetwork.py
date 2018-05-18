@@ -67,13 +67,10 @@ class NeuralNetwork(object):
         return w1, w2
 
     def encode_labels(self, y, num_labels):
-        """ Encode labels into a one-hot representation
-            Params:
-            y: array of num_samples, contains the target class labels for each training example.
-            For example, y = [2, 1, 3, 3] -> 4 training samples, and the ith sample has label y[i]
-            k: number of output labels
-            returns: onehot, a matrix of labels by samples. For each column, the ith index will be
-            "hot", or 1, to represent that index being the label.
+        """ 
+        Encode labels into a one-hot representation
+        y: array of num_samples, contains the target class labels for each training example.
+        num_labels: number of output label
         """
         onehot = np.zeros((num_labels, y.shape[0]))
         for i in range(y.shape[0]):
@@ -81,20 +78,23 @@ class NeuralNetwork(object):
         return onehot
 
     def softmax(self, v):
-        """Calculates the softmax function that outputs a vector of values that sum to one.
-            We take max(softmax(v)) to be the predicted label. The output of the softmax function
-            is also used to calculate the cross-entropy loss
+        """
+              Calculates the softmax function that outputs a vector of values that sum to one.
+
         """
         logC = -np.max(v)
         return np.exp(v + logC)/np.sum(np.exp(v + logC), axis = 0)
 
     def tanh(self, z, deriv=False):
-        """ Compute the tanh function or its derivative.
+        """ 
+            Compute the tanh function or its derivative.
         """
         return np.tanh(z) if not deriv else 1 - np.square(np.tanh(z))
 
     def add_bias_unit(self, X, column=True):
-        """Adds a bias unit to our inputs"""
+        """
+            Adds a bias unit to our inputs
+        """
         if column:
             bias_added = np.ones((X.shape[0], X.shape[1] + 1))
             bias_added[:, 1:] = X
@@ -105,25 +105,26 @@ class NeuralNetwork(object):
         return bias_added
 
     def compute_dropout(self, activations, dropout_prob = 0.5):
-        """Sets half of the activations to zero
-        Params: activations - numpy array
-        Return: activations, which half set to zero
+        """
+            Sets half of the activations to zero
+            activations: activations - numpy array 
+            dropout_prob : Dropout Probability       
         """
         # handle error
         if dropout_prob < 0 or dropout_prob > 1:
             dropout_prob = 0.5
-        # scale the activations (see http://cs231n.github.io/neural-networks-2/)
+        # scale the activations 
         activations/=dropout_prob    
         mult = np.random.binomial(1, 0.5, size = activations.shape)
         activations*=mult
         return activations
 
     def forward(self, X, w1, w2, do_dropout = True):
-        """ Compute feedforward step
-            Params:
+        """ 
+            Compute feedforward step
             X: matrix of num_samples by num_features, input layer with samples and features
-            w1: matrix of weights from input layer to hidden layer. Dimensionality of num_hidden_units by num_features + 1 (bias)
-            w2: matrix of weights from hidden layer to output layer. Dimensionality of num_output_units (equal to num class labels) by num_hidden units + 1 (bias)
+            w1: matrix of weights from input layer to hidden layer.
+            w2: matrix of weights from hidden layer to output layer.
             dropout: If true, randomly set half of the activations to zero to prevent overfitting.
         """
         #the activation of the input layer is simply the input matrix plus bias unit, added for each sample.
@@ -143,13 +144,13 @@ class NeuralNetwork(object):
         return a1, z2, a2, z3, a3
 
     def get_cost(self, y_enc, output, w1, w2):
-        """ Compute the cost function.
-            Params:
+        """ 
+            Compute the cost function.
             y_enc: array of num_labels x num_samples. class labels one-hot encoded
             output: matrix of output_units x samples - activation of output layer from feedforward
             w1: weight matrix of input to hidden layer
             w2: weight matrix of hidden to output layer
-            """
+        """
         cost = - np.sum(y_enc*np.log(output))
         # add the L2 regularization by taking the L2-norm of the weights and multiplying it with our constant.
         l2_term = (self.l2/2.0) * (np.sum(np.square(w1[:, 1:])) + np.sum(np.square(w2[:, 1:])))
