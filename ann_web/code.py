@@ -47,7 +47,7 @@ class upload:
 class csvhanlder:
     def GET(self):
         data =  read_data()
-        return data.to_html()
+        return data.head(10).to_html()
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
