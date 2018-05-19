@@ -5,3 +5,28 @@ body{
     font-family: "Trebuchet MS", sans-serif;
     margin: 50px;
 }
+.button {
+    background-color: #000080; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.dataframe {
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: block;
+    width: 100%;
+    height: 300px;
+    border: 1px solid #ddd;
+}
+
+.dataframe th, td {
+    text-align: left;
+    padding: 8px;
+}
+.dataframe tr:nth-child(even){background-color: #f2f2f2}

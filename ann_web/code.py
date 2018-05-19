@@ -1,12 +1,16 @@
 import os
 import web
+import json
 import pickle
+import pandas as pd
 from lib.ann import ANN
 from lib.utils import *
 
+
 urls =(
     '/', 'index',
-    '/upload', "upload"
+    '/upload', "upload",
+    '/csvhanlder', "csvhanlder"
 )
 # Get templates to render
 render =  web.template.render("templates/")
@@ -34,12 +38,16 @@ class upload:
         return "hello world"
 
     def POST(self):
-        x = web.input(myfile={})
-        web.debug(x)
-        web.debug(x['myfile'].filename) # This is the filename
-        web.debug(x['myfile'].value) # This is the file contents
-        web.debug(x['myfile'].file.read()) # Or use a file(-like) object
-        raise web.seeother('/data')
+        x = web.input()
+        #TODO: Add file writing process to a separate thread
+        with open("data/"+x.name, 'w') as file:
+            file.write(x.data)
+        return  "File Uploaded Successfully"
+
+class csvhanlder:
+    def GET(self):
+        data =  read_data()
+        return data.to_html()
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

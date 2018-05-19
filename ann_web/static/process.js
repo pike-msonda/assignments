@@ -4,49 +4,28 @@ $("#tabs").tabs();
 
 
 //FILE UPLOAD:
-var file;
-$('input[type=file]').on('change', prepareUpload);
-function prepareUpload(event)
-{
-  console.log("Welcome"); 
-  file = event.target.files;
-}
-$('form').on('submit', uploadFiles);
-function uploadFiles(event)
-{
-    event.stopPropagation(); // Stop stuff happening
-    event.preventDefault(); // Totally stop stuff happening
+$('form').submit(function(event){
+    event.stopPropagation();
+    event.preventDefault();
 
-    // START A LOADING SPINNER HERE
+    var file =  document.getElementById('dataFile').files[0];
+    var reader = new FileReader();
+    reader.readAsText(file, 'UTF-8');
+    reader.onload = upload;
 
-    // Create a formdata object and add the files
-   
-    $.ajax({
-        url: 'http://0.0.0.0:8080/upload',
-        type: 'POST',
-        data: file,
-        dataType: 'json',
-        cache: false,
-        processData: false, // Don't process the files
-        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-        success: function(data, textStatus, jqXHR)
-        {
-            if(typeof data.error === 'undefined')
-            {
-                // Success so call function to process the form
-                submitForm(event, data);
-            }
-            else
-            {
-                // Handle errors here
-                console.log('ERRORS: ' + data.error);
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown)
-        {
-            // Handle errors here
-            console.log('ERRORS: ' + textStatus);
-            // STOP LOADING SPINNER
-        }
-    });
-}
+    function upload(event){
+        var result =  event.target.result;
+        var filename = file.name;
+        $.post("http://0.0.0.0:8080/upload", {data: result, name: filename},function(data){
+            $("#status").text(data);
+            $("#status").css('background-color','yellow');
+            setTimeout(function() {$("#status").css('background-color','').text("");}, 3000);
+        });
+        display();
+    }
+    function display(event){
+        $.get("http://0.0.0.0:8080/csvhanlder", function(data){
+               $(".displayData").append(data);
+            });
+    }
+})

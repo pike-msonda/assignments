@@ -6,6 +6,7 @@ $def with()
         <link rel="stylesheet" type="text/css" href="static/jquery-ui.css"/>
         <script src="static/jquery-3.3.1.js"></script>
         <script src="static/jquery-ui.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
             <h2 class="assignment">Assignment</h2>
@@ -17,10 +18,16 @@ $def with()
                 </ul>
                 <div id="tab1">
                     <div id="fileUpload">
+                        
                         <form method="POST" enctype="multipart/form-data">
+                            <label id="toggle"></label>
                             File:  <input type="file" name="dataFile" id="dataFile"> 
-                            <input type="submit" id="data" value="Upload" />  
+                            <button type="submit" id="data" style = "vertical-align:middle" class="button"><span>Upload</span></button> 
+                            <label id="status" name="status"> </label> 
                         </form>
+                    </div>
+                    <div class="displayData" style="overflow-x:auto;">
+
                     </div>
                        
                 </div>

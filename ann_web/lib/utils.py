@@ -89,7 +89,7 @@ def prepare_data():
         Reads data from file, and splits it into training and testing data
 
     """
-    data =  pd.read_csv(FILENAME, sep=';', decimal=',')
+    data =  read_data()
     distinct_classes =encode_text_index(data,'sinif')
     classes = data['sinif']
     num_labels = len(np.unique(classes))
@@ -100,3 +100,7 @@ def prepare_data():
     Y_train = Y.values
     y_test = y.values
     return X_train, x_test, Y_train, y_test, num_labels, distinct_classes
+
+def read_data():
+    data =  pd.read_csv(FILENAME, sep=';', decimal=',')
+    return data
