@@ -1,10 +1,13 @@
 
 // TABS JQUERY
-$("#tabs").tabs();
+$("#tabs").tabs().css({
+    'min-height': '800px',
+    'overflow': 'auto'
+ });
 
 
 //FILE UPLOAD:
-$('form').submit(function(event){
+$('#upload').submit(function(event){
     event.stopPropagation();
     event.preventDefault();
 
@@ -20,12 +23,19 @@ $('form').submit(function(event){
             $("#status").text(data);
             $("#status").css('background-color','yellow');
             setTimeout(function() {$("#status").css('background-color','').text("");}, 3000);
+            display();
         });
-        display();
+      
     }
     function display(event){
         $.get("http://0.0.0.0:8080/csvhanlder", function(data){
+               $(".displayData").empty();
                $(".displayData").append(data);
             });
     }
+})
+
+//Neuron Configuration 
+$("#neuron").submit(function (event){
+    
 })

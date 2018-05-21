@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 
 # CONSTANT VARIABLES
-RANDOM_SEED = 45
+RANDOM_SEED = 200
 FILENAME = 'data/damar.csv'
 MODELFILENAME = "AI_model/neuron.sav"
 

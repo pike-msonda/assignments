@@ -24,6 +24,8 @@ class index:
             Cool stuff will go here
 
         """
+        data = web.data()
+        web.debug(data)
         x_train, x_test, y_train, y_test, dimensions, classes = prepare_data()
 
         ann = ANN(x_train, x_test, y_train, y_test, dimensions,classes, MODELFILENAME)
@@ -40,9 +42,11 @@ class upload:
     def POST(self):
         x = web.input()
         #TODO: Add file writing process to a separate thread
-        with open("data/"+x.name, 'w') as file:
-            file.write(x.data)
-        return  "File Uploaded Successfully"
+        filename="data/"+x.name
+        if not os.path.exists(filename):
+            with open(filename, 'w') as file:
+                file.write(x.data)
+        return  "Status Ok"
 
 class csvhanlder:
     def GET(self):
