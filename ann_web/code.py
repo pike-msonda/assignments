@@ -6,7 +6,6 @@ import pandas as pd
 from lib.ann import ANN
 from lib.utils import *
 
-
 urls =(
     '/', 'index',
     '/upload', "upload",
@@ -20,20 +19,22 @@ class index:
         return render.index()
 
     def POST(self):
-        """
-            Cool stuff will go here
-
-        """
-        data = web.data()
+        data = web.input()
         web.debug(data)
-        x_train, x_test, y_train, y_test, dimensions, classes = prepare_data()
+        if not "new_model" in data:
+            data.__setattr__("new_model", "off")
 
-        ann = ANN(x_train, x_test, y_train, y_test, dimensions,classes, MODELFILENAME)
-        #TODO: add tune-up variables to the "train" method in ANN class
+        ann = ANN(filename =  MODELFILENAME,
+                  epochs = int(data.epoch),
+                  learning = float(data.learning), 
+                  hidden = int(data.hidden), 
+                  decay_rate = float(data.decay_rate), 
+                  new_model = data.new_model)
+        #TODO: Make a thread safe execution
         model = ann.train() # pass necessary tune-up variables here
         accuracy, train_error, test_error = ann.accuracy(model)
 
-        return accuracy, train_error, test_error
+        return accuracy, train_error, test_error 
 
 class upload:
     def GET(self):
@@ -43,6 +44,7 @@ class upload:
         x = web.input()
         #TODO: Add file writing process to a separate thread
         filename="data/"+x.name
+        print(filename)
         if not os.path.exists(filename):
             with open(filename, 'w') as file:
                 file.write(x.data)

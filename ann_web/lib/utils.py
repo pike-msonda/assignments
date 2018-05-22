@@ -90,16 +90,18 @@ def prepare_data():
 
     """
     data =  read_data()
-    distinct_classes =encode_text_index(data,'sinif')
+    encode_text_index(data,'sinif')
     classes = data['sinif']
-    num_labels = len(np.unique(classes))
     inputs = data.drop('sinif', axis=1)
     train, test, Y, y = train_test_split(inputs,classes,test_size=0.25, random_state = RANDOM_SEED)
     X_train =  train.values
     x_test =  test.values
     Y_train = Y.values
     y_test = y.values
-    return X_train, x_test, Y_train, y_test, num_labels, distinct_classes
+    return X_train, x_test, Y_train, y_test, classes
+
+def number_of_labels(classes):
+    return len(np.unique(classes))
 
 def read_data():
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')

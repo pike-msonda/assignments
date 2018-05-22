@@ -225,6 +225,7 @@ class NeuralNetwork(object):
         grad_1_li, grad_2_li = [], [] 
 
         #pass through the dataset
+        print (self.epochs)
         for i in range(self.epochs):
             previous_accuracies = []
             self.learning_rate /= (1 + self.decay_rate*i)

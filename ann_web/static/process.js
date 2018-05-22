@@ -5,7 +5,7 @@ $("#tabs").tabs().css({
     'overflow': 'auto'
  });
 
-
+$(".settings").hide();
 //FILE UPLOAD:
 $('#upload').submit(function(event){
     event.stopPropagation();
@@ -21,13 +21,14 @@ $('#upload').submit(function(event){
         var filename = file.name;
         $.post("http://0.0.0.0:8080/upload", {data: result, name: filename},function(data){
             $("#status").text(data);
-            $("#status").css('background-color','yellow');
+            $("#status").css('background-color','#99ff99');
             setTimeout(function() {$("#status").css('background-color','').text("");}, 3000);
             display();
         });
       
     }
     function display(event){
+        $(".settings").show();
         $.get("http://0.0.0.0:8080/csvhanlder", function(data){
                $(".displayData").empty();
                $(".displayData").append(data);
@@ -36,6 +37,6 @@ $('#upload').submit(function(event){
 })
 
 //Neuron Configuration 
-$("#neuron").submit(function (event){
-    
+$("#neuron").submit(function (event,eventData){
+ 
 })

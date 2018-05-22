@@ -21,14 +21,14 @@ $def with()
                         <div class="column left">
                             <div id="fileUpload">
                                 <form method="POST" name="upload" id="upload" enctype="multipart/form-data">
-                                    File:  <input type="file" name="dataFile" id="dataFile"/> 
+                                   <label> File: </label> <input type="file" name="dataFile" id="dataFile"/> 
                                     <button type="submit" id="data" style = "vertical-align:middle" class="button"><span>Upload</span></button> 
                                     <label id="status" name="status"> </label> 
                                 </form>
                             </div>
                             <div class ="settings">
-                                <h1>Neuron Settings:</h1>
-                                <form method="POST" name="neuron" id="neuron">
+                                <label><h2>Neuron Settings:</h2></label>
+                                <form method="post" name="neuron" id="neuron">
                                     <table class=config>
                                         <thead>
                                             
@@ -43,26 +43,26 @@ $def with()
                                             </tr>
                                             <tr> 
                                                 <td> <label> Hidden Layers </label></td>
-                                                <td><input type="number" name="hidden_layers" min="1" max="3" value="1"></td>
+                                                <td><input type="number" name="hidden_layers" min="1" max="3" value="1" disabled></td>
                                             </tr>
                                             <tr>
                                                 <td> <label>Input Neuron Nodes: </label></td>
-                                                <td><input type="number" name="input" min="1" max="108" value="108"></td>
+                                                <td><input type="number" name="input" min="1" max="108" value="108" disabled></td>
                                             </tr>
                                             <tr>
                                                 <td> <label>Output Neuron Nodes</label></td>
-                                                <td><input type="number" name="output" min ="1" max="100" value="25"></td>
+                                                <td><input type="number" name="output" min ="1" max="100" value="25" disabled></td>
                                             </tr>
                                             <tr>
-                                                <td> <label> Layers Size</label></td>
+                                                <td> <label> Hidden Units</label></td>
                                                 <td><input type="number" name="hidden"  min="1" max="200" value="100"></td>
                                             </tr>
                                             <tr>
-                                                <td>Decay Rate:</td>
-                                                <td><input type="text" name="learning" value="0.00001"></td>
+                                                <td><label>Decay Rate:</label></td>
+                                                <td><input type="text" name="decay_rate" value="0.00001"></td>
                                             </tr>
                                             <tr>
-                                                <td><button type="submit" id="data" style = "vertical-align:middle" class="button"><span>Train</span></button> </td>
+                                                <td><button type="submit" id="train" name="train" style = "vertical-align:middle" class="button"><span>Train</span></button> </td>
                                                 <td><label>New Model</label><input type="checkbox" name="new_model"/></td>
                                                 
                                             </tr>

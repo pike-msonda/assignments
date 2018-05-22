@@ -62,6 +62,8 @@ class NeuralNetwork(object):
         """
         init weights with random nums uniformly with small values, dividing by fanin for xavier
         """
+        print(self.n_features)
+        print(self.n_hidden)
         w1 = np.random.uniform(-1.0, 1.0, size = self.n_hidden * (self.n_features + 1)).reshape(self.n_hidden, (self.n_features + 1))/(self.n_features + 1)
         w2 = np.random.uniform(-1.0, 1.0, size=self.n_output*(self.n_hidden+1)).reshape(self.n_output, self.n_hidden+ 1)/(self.n_hidden + 1)
         return w1, w2
