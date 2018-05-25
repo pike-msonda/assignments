@@ -155,24 +155,27 @@ def main():
     equalWidthIndex = [3,4]     #equal width binning  
     #5 Row Summary:
     print ("First 5 rows Summary:")
-    print (load_data(FILENAME).head())
+    print (load_data(FILENAME).head().to_csv("summary.csv"))
     
     # Mean, Mode, Standard Deviation, Variance
     print ("Mean, Standard Deviation, InterQuartile, Min, Max, Count:")
-    print (df.agg(['mean','std','var','min', 'max', 'count','quantile']))
+    print (df.agg(['mean','std','var','quantile']))
 
     # Mode 
     print ("Mode:")
     mde = df.mode()
-    print(mode(mde))
+    md_res= mode(mde)
+    md_res.to_csv("mode.csv")
+    print(md_res)
 
     normalised_data = min_max_normalization(df)
     print ("Data after Min Max Normalisation:")
     print (normalised_data.head())
-    # Z-score Normalisation
+    normalised_data.round(3).to_csv("normaliseddata.csv")
     z_normalised_data = z_normalization(df)
     print ("Data after Z-score Normalisation:")
     print (z_normalised_data.head())
+    z_normalised_data.round(3).to_csv("z-normalieddata.csv")
 
     # # Frequency Histogram 
     #TODO: add names to graphs and assign colors randomly.
@@ -181,17 +184,21 @@ def main():
         plt.subplot(index)
         ax = sns.distplot(df[col],kde=True, color=random_colors())
         index += 1
+
     #Plot Boxplot for all attributes
+    plt.suptitle('Histograms Showing the Frequency in given Attributes')
     plt.figure()
     ax = sns.boxplot(data=df)
-    ax = sns.swarmplot(data=df)
+    ax.set_title("Box Plot Attributes")
+    #ax = sns.swarmplot(data=df)
 
     #information gain
     for n in equalWidthIndex:
         eqw= equal_width(df, n)
         info_gain = information_gain(eqw, types)
         print ("Information Gain using {} Equal -Width method".format(n))
-        print (info_gain)     
+        for gain in info_gain:
+            print (gain)     
 
    
 if(__name__ == "__main__"):
