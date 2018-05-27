@@ -44,7 +44,6 @@ input[type=checkbox] {
 	display: inline-block;
 	position: relative;
 }
-
 /* Data Frame CSS*/
 .dataframe {
     border-collapse: collapse;
@@ -59,8 +58,21 @@ input[type=checkbox] {
     text-align: left;
     padding: 8px;
 }
-.dataframe tr:nth-child(even){background-color: #f2f2f2}
+.dataframe,.results tr:nth-child(even){background-color: #f2f2f2}
 
+/* Result table */
+.results {
+    border-collapse: collapse;
+    border-spacing: 5;
+    display: block;
+    width: 500px;
+    height: 100%;
+    
+}
+.results  th, td{
+    text-align: left;
+    padding: 8px;
+}
 /* Column CSS */
 /* Create two equal columns that floats next to each other */
 .column {
@@ -88,7 +100,7 @@ input[type=checkbox] {
 }
 
 /* Config Table CSS*/
-.config {
+.config, {
     padding: 16px;
     display: block;
 }

@@ -6,6 +6,7 @@ $("#tabs").tabs().css({
  });
 
 $(".settings").hide();
+$(".training").hide();
 //FILE UPLOAD:
 $('#upload').submit(function(event){
     event.stopPropagation();
@@ -37,6 +38,27 @@ $('#upload').submit(function(event){
 })
 
 //Neuron Configuration 
-$("#neuron").submit(function (event,eventData){
- 
+$("#neuron").submit(function (event){
+    event.preventDefault();
+    event.stopPropagation();
+    form_data = $("#neuron").serialize()
+    $(".training").show();
+    var viewport = $("#process");
+    $.ajax({
+        url: "http://0.0.0.0:8080/",
+        method: "POST",
+        data: form_data,
+        success: function(response){
+            var jsonResult = $.parseJSON(response);
+            $.each(jsonResult.Process, function(index, value){
+                $(".results").find('tbody')
+                .append("<tr><td>"+value.Epoch+"</td><td>"+value.Accuracy+"% </td><td>"+value.Loss+"</td></tr>")
+            })
+            console.log(jsonResult)
+            $(".overall_accuracy").text("Overall Accuracy: "+jsonResult.Acc);
+            $(".train_error").text("Training Error: "+jsonResult.TrainE);
+            $(".test_error").text("Test Error: "+jsonResult.TestE); 
+        }
+    })       
+   
 })

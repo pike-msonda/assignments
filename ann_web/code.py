@@ -9,7 +9,8 @@ from lib.utils import *
 urls =(
     '/', 'index',
     '/upload', "upload",
-    '/csvhanlder', "csvhanlder"
+    '/csvhanlder', "csvhanlder",
+    '/neuron', "neuron"
 )
 # Get templates to render
 render =  web.template.render("templates/")
@@ -17,7 +18,7 @@ render =  web.template.render("templates/")
 class index:
     def GET(self):
         return render.index()
-
+    
     def POST(self):
         data = web.input()
         web.debug(data)
@@ -33,9 +34,9 @@ class index:
         #TODO: Make a thread safe execution
         model = ann.train() # pass necessary tune-up variables here
         accuracy, train_error, test_error = ann.accuracy(model)
-
-        return accuracy, train_error, test_error 
-
+        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process}, sort_keys=True, indent=2, separators=(',',':'))
+        return response
+        
 class upload:
     def GET(self):
         return "hello world"
@@ -44,7 +45,6 @@ class upload:
         x = web.input()
         #TODO: Add file writing process to a separate thread
         filename="data/"+x.name
-        print(filename)
         if not os.path.exists(filename):
             with open(filename, 'w') as file:
                 file.write(x.data)

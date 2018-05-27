@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -50,17 +50,18 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
     test_error /=num_iterations
     return train_error, test_error
     
-# def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
-#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-#     plt.title(title)
-#     plt.colorbar()
-#     tick_marks = np.arange(len(names))
-#     plt.xticks(tick_marks, names, rotation=45)
-#     plt.yticks(tick_marks, names)
-#     plt.tight_layout()
-#     plt.ylabel('True label')
-#     plt.xlabel('Predicted label')
-#     plt.show()
+def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(names))
+    plt.xticks(tick_marks, names, rotation=45)
+    plt.yticks(tick_marks, names)
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.savefig("matrix.png")
+    plt.figure
 
 def calculate_accuracy(classifier,X, Y):
     """
@@ -90,10 +91,10 @@ def prepare_data():
 
     """
     data =  read_data()
-    encode_text_index(data,'sinif')
-    classes = data['sinif']
+    classes = encode_text_index(data,'sinif')
+    encoded_classes=data['sinif']
     inputs = data.drop('sinif', axis=1)
-    train, test, Y, y = train_test_split(inputs,classes,test_size=0.25, random_state = RANDOM_SEED)
+    train, test, Y, y = train_test_split(inputs,encoded_classes,test_size=0.25, random_state = RANDOM_SEED)
     X_train =  train.values
     x_test =  test.values
     Y_train = Y.values

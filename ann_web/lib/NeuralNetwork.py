@@ -56,6 +56,7 @@ class NeuralNetwork(object):
         for elem in metrics:
             assert elem in SUPPORTED_METRICS
         self.metrics = metrics
+        self.process =  []
 
 
     def initialize_weights(self):
@@ -194,17 +195,18 @@ class NeuralNetwork(object):
 
 
     def predict(self, X, dropout = False):
-        """Generate a set of predicted labels for the input dataset"""
+        """
+            Generate a set of predicted labels for the input dataset
+        """
         a1, z2, a2, z3, a3 = self.forward(X, self.w1, self.w2, do_dropout = False)
-        #z3 is of dimension output units x num_samples. each row is an array representing the likelihood that the sample belongs to the class label given by the index...
-        #ex: first row of z3 = [0.98, 0.78, 0.36]. This means our network has 3 output units = 3 class labels. And this instance most likely belongs to the class given by the label 0.
         y_pred = np.argmax(a3, axis = 0)
         return y_pred
 
 
 
     def fit(self, X, y, print_progress=True):
-        """ Learn weights from training data
+        """ 
+        Learn weights from training data
             Params:
             X: matrix of samples x features. Input layer
             y: target class labels of the training instances (ex: y = [1, 3, 4, 4, 3])
@@ -215,17 +217,10 @@ class NeuralNetwork(object):
         # PREVIOUS GRADIENTS
         prev_grad_w1 = np.zeros(self.w1.shape)
         prev_grad_w2 = np.zeros(self.w2.shape)
-        print("fitting.....")
-        print("Number of Classes: {}, Epochs: {}, Nodes: {}, Activation: {}, Features: {}".format(self.n_output, 
-                                                                                                  self.epochs, 
-                                                                                                  self.n_hidden, 
-                                                                                                  self.activation,
-                                                                                                  self.n_features))
         costs = []
         grad_1_li, grad_2_li = [], [] 
 
         #pass through the dataset
-        print (self.epochs)
         for i in range(self.epochs):
             previous_accuracies = []
             self.learning_rate /= (1 + self.decay_rate*i)
@@ -236,9 +231,7 @@ class NeuralNetwork(object):
                 a1, z2, a2, z3, a3= self.forward(X_data[idx], self.w1, self.w2)
                 cost = self.get_cost(y_enc=y_enc[:, idx], output=a3, w1=self.w1, w2=self.w2)
                 costs.append(cost)
-
                 #compute gradient via backpropagation
-
                 grad1, grad2 = self.backprop(a1=a1, a2=a2, a3=a3, z2=z2, y_enc=y_enc[:, idx], w1=self.w1, w2=self.w2)
                 grad_1_li.append(grad1)
                 grad_2_li.append(grad2)
@@ -281,11 +274,8 @@ class NeuralNetwork(object):
                 prev_grad_w1, prev_grad_w2 = w1_update, w2_update
 
             if print_progress and (i+1) % 1 == 0:
-                print("Epoch: {}".format(i + 1))
-                print("Loss: {}".format(cost))
                 acc = self.accuracy(X, y)
                 previous_accuracies.append(acc)
-
-                print("Training Accuracy: {}".format(acc))
+                self.process.append({'Epoch': (i + 1), 'Loss': cost, 'Accuracy': acc })
 
         return self

@@ -17,6 +17,7 @@ class ANN:
         self.learning = learning
         self.hidden = hidden
         self.decay_rate =decay_rate
+        self.plot_confusion_matrix = plot_confusion_matrix
 
 
     def get_model(self):
@@ -57,14 +58,10 @@ class ANN:
     def accuracy(self, classifier):
         accuracy = calculate_accuracy(classifier, self.X_test, self.y_test)
         train_error, test_error = get_train_test_error(classifier, self.X_test, self.y_test, num_iterations=1, split= 0.33)
-        # print ("Training Error: {}, Testing error: {} ".format(train_error, test_error))
-        # print ("Total accuracy {}".format(accuracy))
-
         #Building a confusion Matrix
-        # pred = classifier.predict(x_test)
-        # cm = confusion_matrix(y_test, pred)
-        # np.set_printoptions(precision=2)
-        # plot_confusion_matrix(cm, classes)
+        pred = classifier.predict(self.X_test)
+        cm = confusion_matrix(self.y_test, pred)
+        self.plot_confusion_matrix(cm, self.classes)
         return accuracy, train_error, test_error
     
    

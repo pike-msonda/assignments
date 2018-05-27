@@ -1,11 +1,13 @@
 $def with()
 <html>
     <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Neural Network Configuration</title>
         <link rel="stylesheet" type="text/css" href="static/styles.css" />
         <link rel="stylesheet" type="text/css" href="static/jquery-ui.css"/>
         <script src="static/jquery-3.3.1.js"></script>
         <script src="static/jquery-ui.js"></script>
+        <script src="static/process.js"></script>
         
     </head>
     <body>
@@ -13,7 +15,7 @@ $def with()
             <div id="tabs">
                 <ul>
                     <li><a href="#tab1">Neural Netowrk</a></li>
-                    <li><a href="#tab2">Details</a></li>
+                    <li><a href="#tab2">Confusion Matrix</a></li>
                     <li><a href="#tab3">About</a></li>
                 </ul>
                 <div id="tab1">
@@ -62,8 +64,8 @@ $def with()
                                                 <td><input type="text" name="decay_rate" value="0.00001"></td>
                                             </tr>
                                             <tr>
-                                                <td><button type="submit" id="train" name="train" style = "vertical-align:middle" class="button"><span>Train</span></button> </td>
                                                 <td><label>New Model</label><input type="checkbox" name="new_model"/></td>
+                                                <td><button type="submit" id="train" name="train" style = "vertical-align:middle" class="button"><span>Train</span></button> </td>
                                                 
                                             </tr>
                                         </tbody>
@@ -75,12 +77,40 @@ $def with()
                             <div class="displayData" style="overflow-x:auto;">
 
                             </div>
+                            <div class="training" style="overflow-y:scroll;">
+                                <table class="results" id="results" name="results" border="0">
+                                    <thead>
+                                        <t>
+                                            <th>Epoch</th>
+                                            <th>Accuracy</th>
+                                            <th>Loss</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>      
+                            </div>
+                            <div class="overall">
+                                    <label class="overall_accuracy"> </label>
+                                    <label class="train_error"> </label>
+                                    <label class="test_error"> </label>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
-                <div id="tab2"></div>
-                <div id="tab3"></div>
+                <div id="tab2">
+                    This place is just for graphs
+                    <div class="graph">
+                        <img src="matrix.png"/>
+                    </div>
+                </div>
+                
+                </div>
+                <div id="tab3">
+
+                </div>
             </div>
-    <script src="static/process.js"></script>
     </body>
+    <script src="static/process.js"></script>
 </html>
