@@ -33,14 +33,11 @@ class index:
                   decay_rate = float(data.decay_rate), 
                   new_model = data.new_model)
         #TODO: Make a thread safe execution
-        model = ann.train()# pass necessary tune-up variables here
+        #model = ann.train()# pass necessary tune-up variables here
+        model = process_start(target=trainer, args=[ann])
         accuracy, train_error, test_error = ann.accuracy(model)
-        queue = Queue()
-        process= Process(target=graphpainter, args=(ann, model,queue))
-        process.start()
-        process.join()
-        IMAGE = queue.get()
-        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process, "Figure":IMAGE }, 
+        image = process_start(target=graphpainter, args=[ann,model])
+        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process, "Figure":image }, 
         sort_keys=True, indent=2, separators=(',',':'))
         return response
         
@@ -62,10 +59,6 @@ class csvhanlder:
         data =  read_data()
         return data.head(10).to_html()
 
-def graphpainter(ann, model,queue):
-    classes = ann.classes
-    fig = ann.plot_confusion_matrix(model, classes)
-    queue.put(convert_fig_to_html(fig))
 
 
 if __name__ == "__main__":

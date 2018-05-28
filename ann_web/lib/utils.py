@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+from multiprocessing import Process, Queue 
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -107,3 +107,24 @@ def convert_fig_to_html(fig):
     png_output = StringIO.StringIO()
     canvas.print_png(png_output)
     return '<img src="data:image/png;base64,{}">'.format(urllib.quote(png_output.getvalue().encode('base64').rstrip('\n')))
+
+def process_start(target, args=[]):
+    queue = Queue()
+    index = len(args)
+    args.insert(index, queue)
+    args = tuple(args)
+    process = Process(target=target, args=args)
+    process.start()
+    results = queue.get()
+    process.join()
+
+    return results
+
+def trainer(ann, queue):
+    model = ann.train()
+    queue.put(model)
+
+def graphpainter(ann, model,queue):
+    classes = ann.classes
+    fig = ann.plot_confusion_matrix(model, classes)
+    queue.put(convert_fig_to_html(fig))
