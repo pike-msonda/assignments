@@ -3,6 +3,7 @@ import pickle
 import time
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from utils import *
 from NeuralNetwork import NeuralNetwork
@@ -17,7 +18,6 @@ class ANN:
         self.learning = learning
         self.hidden = hidden
         self.decay_rate =decay_rate
-        self.plot_confusion_matrix = plot_confusion_matrix
 
 
     def get_model(self):
@@ -59,9 +59,23 @@ class ANN:
         accuracy = calculate_accuracy(classifier, self.X_test, self.y_test)
         train_error, test_error = get_train_test_error(classifier, self.X_test, self.y_test, num_iterations=1, split= 0.33)
         #Building a confusion Matrix
+        #figure_html = mp.fig_to_html(figure)
+        return accuracy, train_error, test_error
+
+    def plot_confusion_matrix(self, classifier, names, title='Confusion matrix', cmap=plt.cm.Blues):
         pred = classifier.predict(self.X_test)
         cm = confusion_matrix(self.y_test, pred)
-        self.plot_confusion_matrix(cm, self.classes)
-        return accuracy, train_error, test_error
+        fig = plt.figure()
+        plt.clf()
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.title(title)
+        plt.colorbar()
+        tick_marks = np.arange(len(names))
+        plt.xticks(tick_marks, names, rotation=45)
+        plt.yticks(tick_marks, names)
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        return fig
     
    

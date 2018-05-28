@@ -3,6 +3,7 @@ import web
 import json
 import pickle
 import pandas as pd
+from multiprocessing import Process, Queue
 from lib.ann import ANN
 from lib.utils import *
 
@@ -32,9 +33,15 @@ class index:
                   decay_rate = float(data.decay_rate), 
                   new_model = data.new_model)
         #TODO: Make a thread safe execution
-        model = ann.train() # pass necessary tune-up variables here
+        model = ann.train()# pass necessary tune-up variables here
         accuracy, train_error, test_error = ann.accuracy(model)
-        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process}, sort_keys=True, indent=2, separators=(',',':'))
+        queue = Queue()
+        process= Process(target=graphpainter, args=(ann, model,queue))
+        process.start()
+        process.join()
+        IMAGE = queue.get()
+        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process, "Figure":IMAGE }, 
+        sort_keys=True, indent=2, separators=(',',':'))
         return response
         
 class upload:
@@ -54,6 +61,12 @@ class csvhanlder:
     def GET(self):
         data =  read_data()
         return data.head(10).to_html()
+
+def graphpainter(ann, model,queue):
+    classes = ann.classes
+    fig = ann.plot_confusion_matrix(model, classes)
+    queue.put(convert_fig_to_html(fig))
+
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

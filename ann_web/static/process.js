@@ -43,6 +43,7 @@ $("#neuron").submit(function (event){
     event.stopPropagation();
     form_data = $("#neuron").serialize()
     $(".training").show();
+    $(".graph").empty()
     var viewport = $("#process");
     $.ajax({
         url: "http://0.0.0.0:8080/",
@@ -54,10 +55,10 @@ $("#neuron").submit(function (event){
                 $(".results").find('tbody')
                 .append("<tr><td>"+value.Epoch+"</td><td>"+value.Accuracy+"% </td><td>"+value.Loss+"</td></tr>")
             })
-            console.log(jsonResult)
             $(".overall_accuracy").text("Overall Accuracy: "+jsonResult.Acc);
             $(".train_error").text("Training Error: "+jsonResult.TrainE);
             $(".test_error").text("Test Error: "+jsonResult.TestE); 
+            $(".graph").append(jsonResult.Figure); 
         }
     })       
    

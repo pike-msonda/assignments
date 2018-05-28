@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 RANDOM_SEED = 200
 FILENAME = 'data/damar.csv'
 MODELFILENAME = "AI_model/neuron.sav"
-
+IMAGE = ""
 def onehot_encode(y):
     """one hot encode labels into a matrix
     Finds the range of labels r and then creates a r x y.shape matrix to onehot encode"""
@@ -50,18 +50,8 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
     test_error /=num_iterations
     return train_error, test_error
     
-def plot_confusion_matrix(cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(names))
-    plt.xticks(tick_marks, names, rotation=45)
-    plt.yticks(tick_marks, names)
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.savefig("matrix.png")
-    plt.figure
+
+    
 
 def calculate_accuracy(classifier,X, Y):
     """
@@ -107,3 +97,13 @@ def number_of_labels(classes):
 def read_data():
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')
     return data
+    
+def convert_fig_to_html(fig):
+    """ Convert Matplotlib figure 'fig' into a <img> tag for HTML use using base64 encoding. """
+    import urllib
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    import StringIO
+    canvas = FigureCanvas(fig)
+    png_output = StringIO.StringIO()
+    canvas.print_png(png_output)
+    return '<img src="data:image/png;base64,{}">'.format(urllib.quote(png_output.getvalue().encode('base64').rstrip('\n')))
