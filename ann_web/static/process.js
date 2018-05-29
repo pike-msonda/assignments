@@ -2,9 +2,20 @@
 // TABS JQUERY
 $("#tabs").tabs().css({
     'min-height': '800px',
-    'overflow': 'auto'
+    'overflow': 'auto',
+    
  });
-
+// AJAX setup
+$.ajaxSetup({
+    beforeSend:function(){
+        // show gif here, eg:
+        $("#loading").show();
+    },
+    complete:function(){
+        // hide gif here, eg:
+        $("#loading").hide();
+    }
+});
 $(".settings").hide();
 $(".training").hide();
 //FILE UPLOAD:
@@ -32,6 +43,7 @@ $('#upload').submit(function(event){
         $(".settings").show();
         $.get("http://0.0.0.0:8080/csvhanlder", function(data){
                $(".displayData").empty();
+               $(".displayData").append('<label class="heading"> Data Summary </label>')
                $(".displayData").append(data);
             });
     }

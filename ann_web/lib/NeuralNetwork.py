@@ -23,7 +23,7 @@ class NeuralNetwork(object):
     def __init__(self, n_output, n_features, n_hidden=30, l2=0.0, epochs=500,
                  learning_rate=0.001, momentum_const=0.0, decay_rate=0.0,
                  dropout=False, minibatch_size=1,
-                 optimizer = 'Gradient Descent', activation = 'relu',
+                 optimizer = 'Gradient Descent', activation = 'sigmoid',
                  nesterov = False, check_gradients = False, early_stop = None, metrics = ['Accuracy']):
         self.n_output = n_output
         self.n_features = n_features

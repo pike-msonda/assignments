@@ -1,6 +1,7 @@
 .assignment {
     margin-top: 2em;
 }
+
 body{
     font-family: "Trebuchet MS", sans-serif;
     margin: 50px;
@@ -11,6 +12,13 @@ label {
     padding: 12px 12px 12px 0;
     display: inline-block;
     font-weight: bold
+}
+
+.heading{
+    text-align: center;
+    display: inline-block;
+    font-size: 20px;
+    opacity: 0.6;
 }
 
 /* Input Box CSS */
@@ -35,16 +43,73 @@ input[type=number], input[type=text] {
 }
 
 /* Checkbox CSS*/
-input[type=checkbox] {
-    background-color: #fafafa;
-	border: 1px solid #cacece;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-	padding: 9px;
-	border-radius: 3px;
-	display: inline-block;
-	position: relative;
+/* The container */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: #000080;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 /* Data Frame CSS*/
+
+.displayData{
+    margin-top: 25px;
+    margin-bottom: 10px
+}
 .dataframe {
     border-collapse: collapse;
     border-spacing: 0;
@@ -73,6 +138,7 @@ input[type=checkbox] {
     text-align: left;
     padding: 8px;
 }
+
 /* Column CSS */
 /* Create two equal columns that floats next to each other */
 .column {
@@ -103,4 +169,11 @@ input[type=checkbox] {
 .config, {
     padding: 16px;
     display: block;
+}
+
+#loading {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-image: url("data:image/gif;base64,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"); 
 }

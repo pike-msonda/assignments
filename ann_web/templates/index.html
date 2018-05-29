@@ -41,7 +41,7 @@ $def with()
                                                 <td><input type="number" name="learning" min="0.001" max="1" step = "0.01" value="0.001"></td>
                                             </tr>
                                                 <td><label> Epochs:</label> </td>
-                                                <td><input type="number" name="epoch" min="50" max="500" step="50" value="300"></td>
+                                                <td><input type="number" name="epoch" min="50" max="1000" step="50" value="300"></td>
                                             </tr>
                                             <tr> 
                                                 <td> <label> Hidden Layers </label></td>
@@ -64,8 +64,14 @@ $def with()
                                                 <td><input type="text" name="decay_rate" value="0.00001"></td>
                                             </tr>
                                             <tr>
-                                                <td><label>New Model</label><input type="checkbox" name="new_model"/></td>
+                                                <td>
+                                                        <label class="container">New Model
+                                                                <input type="checkbox" checked="checked" name="new_model">
+                                                                <span class="checkmark"></span>
+                                                        </label>
+                                                </td>
                                                 <td><button type="submit" id="train" name="train" style = "vertical-align:middle" class="button"><span>Train</span></button> </td>
+                                                <td> <div id="loading"></div></td>
                                                 
                                             </tr>
                                         </tbody>
