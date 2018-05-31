@@ -1,6 +1,6 @@
 import numpy as np
 
-# Optimizations module - implements various optimization functions
+# Optimizations module
 
 def vanilla_gd(params, grad1, grad2):
     # The vanilla gradient descent algorithm

@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 
 # CONSTANT VARIABLES
-RANDOM_SEED = 200
+RANDOM_SEED = 250
 FILENAME = 'data/damar.csv'
 MODELFILENAME = "AI_model/neuron.sav"
 IMAGE = ""
@@ -37,7 +37,8 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
         X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                             test_size=split,
                                                             random_state=i)
-        #classifier.fit(X_train, y_train)
+        
+       # classifier.fit(X_train, y_train)
         y_train_pred = classifier.predict(X_train)
         y_test_pred = classifier.predict(X_test)
         train_error+=1- metrics.accuracy_score(y_true=y_train,

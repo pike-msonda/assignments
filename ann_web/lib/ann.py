@@ -10,7 +10,9 @@ from NeuralNetwork import NeuralNetwork
 
 class ANN:
 
-    def __init__(self,filename, epochs, learning, decay_rate, hidden, new_model = 'on'):
+    def __init__(self,filename, epochs, learning, decay_rate, hidden,momentum, 
+            activation, new_model = 'on'):
+            
         self.X_train, self.X_test, self.y_train, self.y_test, self.classes = prepare_data() 
         self.filename = filename
         self.epochs =  epochs
@@ -18,6 +20,8 @@ class ANN:
         self.learning = learning
         self.hidden = hidden
         self.decay_rate =decay_rate
+        self.momentum = momentum
+        self.activation = activation
 
 
     def get_model(self):
@@ -34,13 +38,12 @@ class ANN:
                             n_hidden= self.hidden, 
                             learning_rate= self.learning,
                             epochs= self.epochs, 
-                            momentum_const=0.5, 
-                            decay_rate=0.00001, # self.decay_rate, 
-                            activation='sigmoid',
-                            dropout=True,
+                            momentum_const=self.momentum, 
+                            decay_rate=self.decay_rate,
+                            activation=self.activation,
+                            dropout=False,
                             minibatch_size=50, 
-                            nesterov=True,
-                            check_gradients=False)
+                            nesterov=True)
                             
         if (self.new_model=='on'):
              # Train a new model instead
@@ -50,7 +53,6 @@ class ANN:
             self.write_model(ann)
         else:
            ann = self.get_model()
-
         # print ("The program exectuted successfuly in: %s seconds" % (time.time() - start))
         return ann
           
@@ -58,8 +60,6 @@ class ANN:
     def accuracy(self, classifier):
         accuracy = calculate_accuracy(classifier, self.X_test, self.y_test)
         train_error, test_error = get_train_test_error(classifier, self.X_test, self.y_test, num_iterations=1, split= 0.33)
-        #Building a confusion Matrix
-        #figure_html = mp.fig_to_html(figure)
         return accuracy, train_error, test_error
 
     def plot_confusion_matrix(self, classifier, names, title='Confusion matrix', cmap=plt.cm.Blues):
@@ -73,7 +73,6 @@ class ANN:
         tick_marks = np.arange(len(names))
         plt.xticks(tick_marks, names, rotation=45)
         plt.yticks(tick_marks, names)
-        plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
         return fig

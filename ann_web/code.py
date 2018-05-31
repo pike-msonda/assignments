@@ -7,6 +7,12 @@ from multiprocessing import Process, Queue
 from lib.ann import ANN
 from lib.utils import *
 
+"""
+    Server Application. 
+    Follow webpy standards. 
+"""
+
+#URL list
 urls =(
     '/', 'index',
     '/upload', "upload",
@@ -31,9 +37,10 @@ class index:
                   learning = float(data.learning), 
                   hidden = int(data.hidden), 
                   decay_rate = float(data.decay_rate), 
-                  new_model = data.new_model)
-        #TODO: Make a thread safe execution
-        #model = ann.train()# pass necessary tune-up variables here
+                  new_model = data.new_model,
+                  activation=data.activation,
+                  momentum = float(data.momentum))
+
         model = process_start(target=trainer, args=[ann])
         accuracy, train_error, test_error = ann.accuracy(model)
         image = process_start(target=graphpainter, args=[ann,model])
@@ -52,7 +59,7 @@ class upload:
         if not os.path.exists(filename):
             with open(filename, 'w') as file:
                 file.write(x.data)
-        return  "Status Ok"
+        return  "Uploaded."
 
 class csvhanlder:
     def GET(self):

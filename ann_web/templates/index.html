@@ -61,7 +61,24 @@ $def with()
                                             </tr>
                                             <tr>
                                                 <td><label>Decay Rate:</label></td>
-                                                <td><input type="text" name="decay_rate" value="0.00001"></td>
+                                                <td><input type="number" name="decay_rate" min ="0" max = "1" step="0.00001" value="0.00001"></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>Momentum:</label></td>
+                                                <td><input type="number" name="momentum" min ="0" max="1" step = "0.1" value="0.7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td> 
+                                                    <label> Activation: </label> 
+                                                </td>
+                                                <td>
+                                                    <select name = "activation">
+                                                    <option value="sigmoid">Softmax</option>
+                                                    <option value="relu">Rectifier</option>
+                                                    <option value="tanh">Tanh</option>
+                                                    <option value="maxout">Maxout</option>
+                                                  </select> 
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
