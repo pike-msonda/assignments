@@ -25,7 +25,7 @@ render =  web.template.render("templates/")
 class index:
     def GET(self):
         return render.index()
-    
+
     def POST(self):
         data = web.input()
         web.debug(data)
@@ -44,10 +44,16 @@ class index:
         model = process_start(target=trainer, args=[ann])
         accuracy, train_error, test_error = ann.accuracy(model)
         image = process_start(target=graphpainter, args=[ann,model])
-        response = json.dumps({'Acc':accuracy,'TrainE':train_error,'TestE':test_error,'Process':model.process, "Figure":image }, 
-        sort_keys=True, indent=2, separators=(',',':'))
+        response = json.dumps({'Acc':accuracy,
+                               'TrainE':train_error,
+                               'TestE':test_error,
+                               'Process':model.process, 
+                               "Figure":image },
+                               sort_keys=True, 
+                               indent=2, 
+                               separators=(',',':'))
         return response
-        
+
 class upload:
     def GET(self):
         return "hello world"

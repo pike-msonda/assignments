@@ -3,7 +3,7 @@
 $("#tabs").tabs().css({
     'min-height': '800px',
     'overflow': 'auto',
-    
+
  });
 // AJAX setup
 $.ajaxSetup({
@@ -31,17 +31,17 @@ $('#upload').submit(function(event){
     function upload(event){
         var result =  event.target.result;
         var filename = file.name;
-        $.post("http://0.0.0.0:8080/upload", {data: result, name: filename},function(data){
+        $.post("http://127.0.0.1:8080/upload", {data: result, name: filename},function(data){
             $("#status").text(data);
             $("#status").css('background-color','#99ff99');
             setTimeout(function() {$("#status").css('background-color','').text("");}, 3000);
             display();
         });
-      
+
     }
     function display(event){
         $(".settings").show();
-        $.get("http://0.0.0.0:8080/csvhanlder", function(data){
+        $.get("http://127.0.0.1:8080/csvhanlder", function(data){
                $(".displayData").empty();
                $(".displayData").append('<label class="heading"> Data Summary </label>')
                $(".displayData").append(data);
@@ -49,7 +49,7 @@ $('#upload').submit(function(event){
     }
 })
 
-//Neuron Configuration 
+//Neuron Configuration
 $("#neuron").submit(function (event){
     event.preventDefault();
     event.stopPropagation();
@@ -58,7 +58,7 @@ $("#neuron").submit(function (event){
     $(".graph").empty()
     var viewport = $("#process");
     $.ajax({
-        url: "http://0.0.0.0:8080/",
+        url: "http://127.0.0.1:8080/",
         method: "POST",
         data: form_data,
         success: function(response){
@@ -69,9 +69,9 @@ $("#neuron").submit(function (event){
             })
             $(".overall_accuracy").text("Overall Accuracy: "+jsonResult.Acc);
             $(".train_error").text("Training Error: "+jsonResult.TrainE);
-            $(".test_error").text("Test Error: "+jsonResult.TestE); 
-            $(".graph").append(jsonResult.Figure); 
+            $(".test_error").text("Test Error: "+jsonResult.TestE);
+            $(".graph").append(jsonResult.Figure);
         }
-    })       
-   
+    })
+
 })

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from multiprocessing import Process, Queue 
+from multiprocessing import Process, Queue
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -50,17 +50,17 @@ def get_train_test_error(classifier, X, y, num_iterations = 1, split = 0.25):
     train_error /=num_iterations
     test_error /=num_iterations
     return train_error, test_error
-    
 
-    
+
+
 
 def calculate_accuracy(classifier,X, Y):
     """
         Helper method to find the accuracy of a prediction
-        
+
         classifier: NeuralNetowrk instance
         X: imput data
-        Y: target 
+        Y: target
     """
     return classifier.accuracy(X, Y)
 
@@ -98,7 +98,7 @@ def number_of_labels(classes):
 def read_data():
     data =  pd.read_csv(FILENAME, sep=';', decimal=',')
     return data
-    
+
 def convert_fig_to_html(fig):
     """ Convert Matplotlib figure 'fig' into a <img> tag for HTML use using base64 encoding. """
     import urllib
