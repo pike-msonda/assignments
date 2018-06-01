@@ -19,6 +19,7 @@ label {
     display: inline-block;
     font-size: 20px;
     opacity: 0.6;
+    background-color: #2196F3;
 }
 
 /* Input Box CSS */
@@ -192,4 +193,25 @@ select {
     outline:none;
     display: inline-block;;
     cursor:pointer;
+}
+.overall_accuracy{
+    font-size: 20px;
+    color: white;
+    padding: 8px;
+    background-color: #4CAF50;
+}
+.train_error{
+    font-size: 20px;
+    color: white;
+    padding: 8px;
+    background-color: #ff9800;
+}
+.test_error{
+    font-size: 20px;
+    color: white;
+    padding: 8px;
+    background-color: #f44336;
+}
+.overall{
+    margin-top:30px;
 }
