@@ -22,6 +22,27 @@ urls =(
 # Get templates to render
 render =  web.template.render("templates/")
 
+#Initialise application
+app = web.application(urls, globals())
+
+#Set global variables in here
+def add_global_hook():
+    upload_filename = ""
+    g = web.storage({"filename": upload_filename })
+
+    def _wrapper(handler):
+        web.ctx.globals = g
+        return handler()
+    return _wrapper
+
+
+if web.config.get('_session') is None:
+    session =  web.session.Session(app, web.session.DiskStore('sessions'))
+    web.config._session = session
+else:
+    session = web.config._session
+
+
 class index:
     def GET(self):
         return render.index()
@@ -32,7 +53,7 @@ class index:
         if not "new_model" in data:
             data.__setattr__("new_model", "off")
 
-        ann = ANN(filename =  MODELFILENAME,
+        ann = ANN(filename =  web.ctx.globals.filename,
                   epochs = int(data.epoch),
                   learning = float(data.learning), 
                   hidden = int(data.hidden), 
@@ -62,6 +83,7 @@ class upload:
         x = web.input()
         #TODO: Add file writing process to a separate thread
         filename="data/"+x.name
+        web.ctx.globals.filename = filename
         if not os.path.exists(filename):
             with open(filename, 'w') as file:
                 file.write(x.data)
@@ -69,11 +91,10 @@ class upload:
 
 class csvhanlder:
     def GET(self):
-        data =  read_data()
+        data =  read_data(web.ctx.globals.filename)
         return data.head(10).to_html()
 
 
-
 if __name__ == "__main__":
-    app = web.application(urls, globals())
+    app.add_processor(add_global_hook())
     app.run()

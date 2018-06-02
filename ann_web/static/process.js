@@ -25,6 +25,7 @@ $('#upload').submit(function(event){
     event.preventDefault();
 
     var file =  document.getElementById('dataFile').files[0];
+    console.log(file);
     var reader = new FileReader();
     reader.readAsText(file, 'UTF-8');
     reader.onload = upload;

@@ -187,6 +187,7 @@ class NeuralNetwork(object):
         """
         X_data, y_data = X.copy(), y.copy()
         y_enc = self.encode_labels(y, self.n_output)
+        print("I am here")
         # PREVIOUS GRADIENTS
         prev_grad_w1 = np.zeros(self.w1.shape)
         prev_grad_w2 = np.zeros(self.w2.shape)

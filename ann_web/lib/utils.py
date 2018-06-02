@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import csv
 from multiprocessing import Process, Queue
 from sklearn import metrics
 from sklearn import preprocessing
@@ -64,7 +65,7 @@ def calculate_accuracy(classifier,X, Y):
     """
     return classifier.accuracy(X, Y)
 
-def encode_text_index(df, name):
+def encode_text_index(df):
     """
         Label Encoding using sklearn.preporcessing. Transforms labels into integers i.e: [a, b, c] => [1, 2, 3]
 
@@ -73,31 +74,40 @@ def encode_text_index(df, name):
 
     """
     le = preprocessing.LabelEncoder()
-    df[name] = le.fit_transform(df[name])
+    df.iloc[:,-1] = le.fit_transform(df.iloc[:,-1])
     return le.classes_
 
-def prepare_data():
+def prepare_data(file):
     """
         Reads data from file, and splits it into training and testing data
 
     """
-    data =  read_data()
-    classes = encode_text_index(data,'sinif')
-    encoded_classes=data['sinif']
-    inputs = data.drop('sinif', axis=1)
+    data =  read_data(file)
+    classes = encode_text_index(data)
+    encoded_classes=data.iloc[:,-1]
+    data_values = data.values
+    inputs = data_values[:,:-1]
     train, test, Y, y = train_test_split(inputs,encoded_classes,test_size=0.25, random_state = RANDOM_SEED)
-    X_train =  train.values
-    x_test =  test.values
-    Y_train = Y.values
-    y_test = y.values
+    X_train =  train
+    x_test =  test
+    Y_train = Y
+    y_test = y
     return X_train, x_test, Y_train, y_test, classes
 
 def number_of_labels(classes):
     return len(np.unique(classes))
 
-def read_data():
-    data =  pd.read_csv(FILENAME, sep=';', decimal=',')
+def read_data(file):
+    dialect = csv_dialect(file)
+    data =  pd.read_csv(file, dialect=dialect, decimal=',')
     return data
+
+def csv_dialect(file):
+    dialect = ""
+    with open(file, 'rb') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.readline())
+        csvfile.seek(0)
+    return dialect
 
 def convert_fig_to_html(fig):
     """ Convert Matplotlib figure 'fig' into a <img> tag for HTML use using base64 encoding. """
@@ -120,6 +130,7 @@ def process_start(target, args=[]):
     process.join()
 
     return results
+
 
 def trainer(ann, queue):
     model = ann.train()

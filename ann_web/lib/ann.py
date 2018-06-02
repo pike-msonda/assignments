@@ -13,8 +13,8 @@ class ANN:
     def __init__(self,filename, epochs, learning, decay_rate, hidden,momentum, 
             activation, new_model = 'on'):
             
-        self.X_train, self.X_test, self.y_train, self.y_test, self.classes = prepare_data() 
         self.filename = filename
+        self.X_train, self.X_test, self.y_train, self.y_test, self.classes = prepare_data(self.filename) 
         self.epochs =  epochs
         self.new_model = new_model
         self.learning = learning
@@ -25,10 +25,10 @@ class ANN:
 
 
     def get_model(self):
-        return pickle.load(open(self.filename, 'rb'))
+        return pickle.load(open(MODELFILENAME, 'rb'))
 
     def write_model(self, trained_model):
-        pickle.dump(trained_model, open(self.filename, 'wb'))
+        pickle.dump(trained_model, open(MODELFILENAME, 'wb'))
 
     def train(self):
         #start = time.time()

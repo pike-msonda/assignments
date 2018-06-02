@@ -142,7 +142,9 @@ if(__name__ == "__main__"):
 
         for name, image in split_images.items():
             pixel_list = get_pixel_list(image)
+            print(pixel_list)
             mean, total = stats(image)
+            print(mean)
             normalised_mean = normalise(list(mean))
             normalised_pixel_list = normalise(pixel_list)
             res = mad(normalised_mean, normalised_pixel_list)
