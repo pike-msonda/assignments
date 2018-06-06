@@ -42,7 +42,7 @@ class ANN:
                             decay_rate=self.decay_rate,
                             activation=self.activation,
                             dropout=False,
-                            minibatch_size=50, 
+                            minibatch_size=1, 
                             nesterov=True)
                             
         if (self.new_model=='on'):

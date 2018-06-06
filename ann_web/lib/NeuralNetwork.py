@@ -65,6 +65,10 @@ class NeuralNetwork(object):
         for i in range(y.shape[0]):
             onehot[y[i], i] = 1.0
         return onehot
+    # def encode_labels(self,y, num_classes):
+    #     print(num_classes)
+    #     targets = np.array(y).reshape(-1)
+    #     return np.eye(num_classes)[targets.astype(np.int64)]
 
     def softmax(self, v):
         """
@@ -187,7 +191,7 @@ class NeuralNetwork(object):
         """
         X_data, y_data = X.copy(), y.copy()
         y_enc = self.encode_labels(y, self.n_output)
-        print("I am here")
+
         # PREVIOUS GRADIENTS
         prev_grad_w1 = np.zeros(self.w1.shape)
         prev_grad_w2 = np.zeros(self.w2.shape)
@@ -199,6 +203,7 @@ class NeuralNetwork(object):
             previous_accuracies = []
             self.learning_rate /= (1 + self.decay_rate*i)
             mini = np.array_split(range(y_data.shape[0]), self.minibatch_size)
+            print(mini)
             for idx in mini:
                 #feed feedforward
                 a1, z2, a2, z3, a3= self.forward(X_data[idx], self.w1, self.w2)
