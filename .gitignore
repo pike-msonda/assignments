@@ -3,3 +3,4 @@
 .vscode
 *.sav
 *.pyc
+sessions/
