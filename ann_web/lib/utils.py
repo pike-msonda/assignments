@@ -94,13 +94,22 @@ def prepare_data(file):
     y_test = y
     return X_train, x_test, Y_train, y_test, classes
 
+def const_values(data):
+    classes = data.iloc[:,-1]
+    outputs = number_of_labels(classes)
+    inputs  = data.shape[1] - 1
+
+    return inputs, outputs
+
 def number_of_labels(classes):
     return len(np.unique(classes))
+
 
 def read_data(file):
     dialect = csv_dialect(file)
     data =  pd.read_csv(file, dialect=dialect, decimal=',')
     return data
+
 
 def csv_dialect(file):
     dialect = ""
@@ -130,7 +139,6 @@ def process_start(target, args=[]):
     process.join()
 
     return results
-
 
 def trainer(ann, queue):
     model = ann.train()

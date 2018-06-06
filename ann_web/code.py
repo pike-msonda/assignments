@@ -17,7 +17,8 @@ urls =(
     '/', 'index',
     '/upload', "upload",
     '/csvhanlder', "csvhanlder",
-    '/neuron', "neuron"
+    '/neuron', "neuron",
+    '/stats', "stats"
 )
 # Get templates to render
 render =  web.template.render("templates/")
@@ -28,7 +29,8 @@ app = web.application(urls, globals())
 #Set global variables in here
 def add_global_hook():
     upload_filename = ""
-    g = web.storage({"filename": upload_filename })
+    data = ""
+    g = web.storage({"filename": upload_filename, "data":data })
 
     def _wrapper(handler):
         web.ctx.globals = g
@@ -77,7 +79,7 @@ class index:
 
 class upload:
     def GET(self):
-        return "hello world"
+        return ""
 
     def POST(self):
         x = web.input()
@@ -91,8 +93,18 @@ class upload:
 
 class csvhanlder:
     def GET(self):
-        data =  read_data(web.ctx.globals.filename)
+        web.ctx.globals.data =  read_data(web.ctx.globals.filename)
+        data = web.ctx.globals.data
         return data.head(10).to_html()
+
+class stats:
+    def GET(self):
+        inputs, outputs = const_values(web.ctx.globals.data)
+        response = json.dumps({
+            'inputs': inputs, 
+            'outputs': outputs
+        })
+        return response
 
 
 if __name__ == "__main__":

@@ -25,7 +25,6 @@ $('#upload').submit(function(event){
     event.preventDefault();
 
     var file =  document.getElementById('dataFile').files[0];
-    console.log(file);
     var reader = new FileReader();
     reader.readAsText(file, 'UTF-8');
     reader.onload = upload;
@@ -48,6 +47,12 @@ $('#upload').submit(function(event){
                $(".displayData").append('<span class="heading"> Data Summary </span>')
                $(".displayData").append(data);
             });
+
+        $.get("http://0.0.0.0:8080/stats", function(data){
+            var jsonResult = $.parseJSON(data);
+            $("#input").val(jsonResult.inputs);
+            $("#output").val(jsonResult.outputs)
+        }); 
     }
 })
 

@@ -48,7 +48,7 @@ class ANN:
         if (self.new_model=='on'):
              # Train a new model instead
             if(os.path.exists(self.filename)):
-                os.remove(self.filename)
+                os.remove(MODELFILENAME)
             ann.fit(self.X_train,self.y_train)
             self.write_model(ann)
         else:
